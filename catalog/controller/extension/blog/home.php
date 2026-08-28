@@ -10,7 +10,10 @@ class ControllerExtensionBlogHome extends Controller {
 		
 		$this->load->model('tool/image');
 
-		$limit = $this->config->get('blogsetting_blogs_per_page');
+			$limit = (int)$this->config->get('blogsetting_blogs_per_page');
+			if ($limit < 1) {
+				$limit = 6;
+			}
 		$img_width = $this->config->get('blogsetting_thumbs_w');
 		$img_height = $this->config->get('blogsetting_thumbs_h');
 		$data['date_added_status'] = $this->config->get('blogsetting_date_added');
@@ -31,11 +34,15 @@ class ControllerExtensionBlogHome extends Controller {
 			'href'      => $this->url->link('extension/blog/home')
       	);	
 		
-		if (isset($this->request->get['page'])) {
-			$page = $this->request->get['page'];
-		} else {
-			$page = 1;
-		}
+			if (isset($this->request->get['page'])) {
+				$page = (int)$this->request->get['page'];
+			} else {
+				$page = 1;
+			}
+
+			if ($page < 1) {
+				return new Action('error/not_found');
+			}
 		
 		$pagefix = ($page - 1) * $limit;
 			
@@ -56,7 +63,12 @@ class ControllerExtensionBlogHome extends Controller {
 		);
 		
 		
-		$blog_total = $this->model_extension_blog_blog->getTotalBlogs($filter_data);
+			$blog_total = $this->model_extension_blog_blog->getTotalBlogs($filter_data);
+
+			$max_pages = max(1, (int)ceil($blog_total / max(1, $limit)));
+			if ($page > $max_pages) {
+				return new Action('error/not_found');
+			}
 		
 		$results = $this->model_extension_blog_blog->getBlogs($filter_data, $pagefix, $limit);
 		
@@ -114,15 +126,27 @@ class ControllerExtensionBlogHome extends Controller {
 		$data['description'] = false;
 		}
 					
-		$blog_page_meta_description = $this->config->get('blogsetting_home_meta_description');
-		if ($blog_page_meta_description[$this->config->get('config_language_id')]) {
-		$this->document->setDescription($blog_page_meta_description[$this->config->get('config_language_id')]);
-		}
+			$blog_page_meta_description = $this->config->get('blogsetting_home_meta_description');
+			$language_id = (int)$this->config->get('config_language_id');
+			$configured_meta_description = is_array($blog_page_meta_description) && !empty($blog_page_meta_description[$language_id]) ? trim($blog_page_meta_description[$language_id]) : '';
+			if ($configured_meta_description !== '') {
+				$this->document->setDescription($configured_meta_description);
+			} elseif ($data['description']) {
+				$fallback_description = preg_replace('/\s+/u', ' ', trim(strip_tags($data['description'])));
+				$this->document->setDescription(utf8_substr($fallback_description, 0, 160));
+			} else {
+				$this->document->setDescription('Savjeti za odabir satova, sunčanih naočala i nakita, vodiči kroz kolekcije te preporuke za njegu proizvoda Watch Line.');
+			}
 		
 		$blog_page_meta_keyword = $this->config->get('blogsetting_home_meta_keyword');
-		if ($blog_page_meta_keyword[$this->config->get('config_language_id')]) {
-		$this->document->setKeywords($blog_page_meta_keyword[$this->config->get('config_language_id')]);
-		}
+			if ($blog_page_meta_keyword[$this->config->get('config_language_id')]) {
+			$this->document->setKeywords($blog_page_meta_keyword[$this->config->get('config_language_id')]);
+			}
+
+			if (!$filter_tag) {
+				$canonical_args = $page > 1 ? 'page=' . $page : '';
+				$this->document->addLink($this->url->link('extension/blog/home', $canonical_args), 'canonical');
+			}
 
 		$data['text_posted_on'] = $this->language->get('text_posted_on');
 		$data['text_read'] = $this->language->get('text_read');
@@ -137,17 +161,16 @@ class ControllerExtensionBlogHome extends Controller {
 			$url .= '&page=' . $this->request->get['page'];
 		}*/
 		
-		if( isset($this->request->get['tag']) ){
-			$url .= '&tag=' . $filter_tag;
-		}
+			if( isset($this->request->get['tag']) ){
+				$url .= 'tag=' . urlencode($filter_tag);
+			}
 		
 		$pagination = new Pagination();
 		$pagination->total = $blog_total;
 		$pagination->page = $page;
-		$pagination->limit = $this->config->get('blogsetting_blogs_per_page');
-		if (empty($pagination->limit)) {$pagination->limit = 5;}
+		$pagination->limit = $limit;
 		$pagination->text = $this->language->get('text_pagination');
-		$pagination->url = $this->url->link('extension/blog/home', $url . '&page={page}');
+			$pagination->url = $this->url->link('extension/blog/home', ($url ? $url . '&' : '') . 'page={page}');
 		
 		$data['pagination'] = $pagination->render();
 		

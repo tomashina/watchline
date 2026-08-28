@@ -19,7 +19,7 @@
     <?php $class = 'col-sm-12'; ?>
     <?php } ?>
     
-    <div id="content" class="<?php echo $class; ?>" >
+	    <main id="content" class="<?php echo $class; ?>" >
     <?php echo $content_top; ?>
       
       <h1 id="page-title"><?php echo $heading_title; ?></h1>
@@ -60,7 +60,7 @@
           
           <div class="table-cell nowrap text-right ">
           <div class="sort-select">
-          <span class="hidden-xs"><?php echo $text_sort; ?></span>
+	          <label class="hidden-xs" for="input-sort"><?php echo $text_sort; ?></label>
           <select id="input-sort" class="form-control input-sm inline" onchange="location = this.value;">
             <?php foreach ($sorts as $sorts) { ?>
             <?php if ($sorts['value'] == $sort . '-' . $order) { ?>
@@ -74,7 +74,7 @@
           </div>
           
           <div class="table-cell nowrap text-right hidden-xs hidden-sm">
-          <span><?php echo $text_limit; ?></span>
+	          <label for="input-limit"><?php echo $text_limit; ?></label>
           <select id="input-limit" class="form-control input-sm inline" onchange="location = this.value;">
             <?php foreach ($limits as $limits) { ?>
             <?php if ($limits['value'] == $limit) { ?>
@@ -114,7 +114,7 @@
       <p><?php echo $text_empty; ?></p>
       <?php } ?>
       
-      <?php echo $content_bottom; ?></div>
+	      <?php echo $content_bottom; ?></main>
     <?php echo $column_right; ?></div>
 
      <div class="row " style="margin-top:30px;margin-bottom:30px">
@@ -124,8 +124,8 @@
   background-repeat: repeat;
   background-attachment: fixed;">
   
-          <div class="panel-body"> <h2><?php echo $heading_title; ?></h2>
-        <div class="category-description"><?php echo $description; ?></div></div>
+	          <div class="panel-body">
+	        <div class="category-description"><?php echo $description; ?></div></div>
           </div>
             
              

@@ -54,15 +54,27 @@ class ControllerProductSearch extends Controller {
 		}
 
 		if (isset($this->request->get['page'])) {
-			$page = $this->request->get['page'];
+			$page = (int)$this->request->get['page'];
 		} else {
 			$page = 1;
+		}
+
+		if ($page < 1) {
+			return new Action('error/not_found');
+		}
+
+		if ($page > 1 && trim((string)$search) === '' && trim((string)$tag) === '') {
+			return new Action('error/not_found');
 		}
 
 		if (isset($this->request->get['limit'])) {
 			$limit = (int)$this->request->get['limit'];
 		} else {
-			$limit = $this->config->get($this->config->get('config_theme') . '_product_limit');
+			$limit = (int)$this->config->get($this->config->get('config_theme') . '_product_limit');
+		}
+
+		if ($limit < 1) {
+			$limit = 24;
 		}
 
 		if (isset($this->request->get['search'])) {
@@ -210,6 +222,11 @@ class ControllerProductSearch extends Controller {
 			);
 
 			$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
+
+			$max_pages = max(1, (int)ceil($product_total / $limit));
+			if ($page > $max_pages) {
+				return new Action('error/not_found');
+			}
 
 			$results = $this->model_catalog_product->getProducts($filter_data);
 

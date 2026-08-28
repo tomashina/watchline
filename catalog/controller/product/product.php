@@ -214,10 +214,33 @@ class ControllerProductProduct extends Controller {
 				'href' => $this->url->link('product/product', $url . '&product_id=' . $this->request->get['product_id'])
 			);
 
-			$this->document->setTitle($product_info['meta_title']);
-			$this->document->setDescription($product_info['meta_description']);
+			$meta_title = trim(html_entity_decode($product_info['meta_title'], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+			$meta_title = preg_replace('/\s*\|\s*WATCH LINE AM\s*-\s*Web Shop\s*$/iu', '', $meta_title);
+			if ($meta_title === '') {
+				$meta_title = trim($product_info['name']);
+			}
+			if (stripos($meta_title, 'Watch Line') === false) {
+				$meta_title .= ' | Watch Line';
+			}
+
+			$meta_description = trim(html_entity_decode($product_info['meta_description'], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+			if ($meta_description === '') {
+				$meta_description = preg_replace('/\s+/u', ' ', trim(strip_tags(html_entity_decode($product_info['description'], ENT_QUOTES | ENT_HTML5, 'UTF-8'))));
+				$meta_description = utf8_substr($meta_description, 0, 160);
+			}
+
+			$this->document->setTitle($meta_title);
+			$this->document->setDescription($meta_description);
 			$this->document->setKeywords($product_info['meta_keyword']);
-			$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');
+				if ($this->config->get('hb_canonical_status')) {
+					$this->load->model('extension/module/hb_canonical');
+					$canonical_product_url = $this->model_extension_module_hb_canonical->product_canonical($product_id);
+				} else {
+					$canonical_product_url = $this->url->link('product/product', 'product_id=' . $product_id);
+					$this->document->addLink($canonical_product_url, 'canonical');
+				}
+
+				$this->redirectToCanonicalProduct($canonical_product_url);
 			$this->document->addScript('catalog/view/javascript/jquery/magnific/jquery.magnific-popup.min.js');
 			$this->document->addStyle('catalog/view/javascript/jquery/magnific/magnific-popup.css');
 			$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment.js');
@@ -279,7 +302,12 @@ class ControllerProductProduct extends Controller {
 				$data['stock'] = $this->language->get('text_instock');
 			}
 
-			$this->load->model('tool/image');
+				$this->load->model('tool/image');
+				$theme = $this->config->get('config_theme');
+				$data['image_thumb_width'] = (int)$this->config->get($theme . '_image_thumb_width');
+				$data['image_thumb_height'] = (int)$this->config->get($theme . '_image_thumb_height');
+				$data['image_additional_width'] = (int)$this->config->get($theme . '_image_additional_width');
+				$data['image_additional_height'] = (int)$this->config->get($theme . '_image_additional_height');
 
 			if ($product_info['image']) {
 				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get($this->config->get('config_theme') . '_image_popup_width'), $this->config->get($this->config->get('config_theme') . '_image_popup_height'));
@@ -754,5 +782,47 @@ class ControllerProductProduct extends Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	private function redirectToCanonicalProduct($canonical_url) {
+		$method = isset($this->request->server['REQUEST_METHOD']) ? strtoupper($this->request->server['REQUEST_METHOD']) : 'GET';
+		$is_ajax = !empty($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+		if (!in_array($method, array('GET', 'HEAD'), true) || $is_ajax || !$canonical_url) {
+			return;
+		}
+
+		$request_uri = isset($this->request->server['REQUEST_URI']) ? $this->request->server['REQUEST_URI'] : '';
+		$request_uri = html_entity_decode($request_uri, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+		$current_path = rawurldecode((string)parse_url($request_uri, PHP_URL_PATH));
+		$canonical_url = html_entity_decode($canonical_url, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+		$canonical_path = rawurldecode((string)parse_url($canonical_url, PHP_URL_PATH));
+		$public_query = array();
+		$query_string = parse_url($request_uri, PHP_URL_QUERY);
+
+		if ($query_string) {
+			parse_str($query_string, $public_query);
+		}
+
+		$tracking_keys = array('utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'msclkid');
+		$tracking = array();
+
+		foreach ($tracking_keys as $tracking_key) {
+			if (isset($this->request->get[$tracking_key]) && is_scalar($this->request->get[$tracking_key])) {
+				$tracking[$tracking_key] = (string)$this->request->get[$tracking_key];
+			}
+		}
+
+		$non_tracking = array_diff_key($public_query, array_flip($tracking_keys));
+
+		if ($current_path === $canonical_path && !$non_tracking) {
+			return;
+		}
+
+		if ($tracking) {
+			$canonical_url .= (strpos($canonical_url, '?') === false ? '?' : '&') . http_build_query($tracking, '', '&');
+		}
+
+		$this->response->redirect($canonical_url, 301);
 	}
 }

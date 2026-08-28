@@ -3,18 +3,18 @@
 <!--[if IE 8 ]><html dir="<?php echo $direction; ?>" lang="<?php echo $lang; ?>" class="ie8"><![endif]-->
 <!--[if IE 9 ]><html dir="<?php echo $direction; ?>" lang="<?php echo $lang; ?>" class="ie9"><![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!-->
-<html dir="<?php echo $direction; ?>" lang="<?php echo $lang; ?>">
+<html dir="<?php echo htmlspecialchars($direction, ENT_QUOTES, 'UTF-8'); ?>" lang="<?php echo htmlspecialchars($lang, ENT_QUOTES, 'UTF-8'); ?>">
 <!--<![endif]-->
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title><?php echo $title; ?></title>
+<title><?php echo htmlspecialchars(html_entity_decode($title, ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8'); ?></title>
 <meta name="google-site-verification" content="2-coc_MNYMNhd0GXJ1QoPFgORFmk5ITeXPmQYFtwvyQ" />
 <meta name="google-site-verification" content="X7-vQjKku6Wbx4O5ebeiaQddYKHqEyWXjw0ITf6Sv4I" />
-<base href="<?php echo $base; ?>" />
-<?php if ($description) { ?><meta name="description" content="<?php echo $description; ?>" /><?php } ?>
-<?php if ($keywords) { ?><meta name="keywords" content= "<?php echo $keywords; ?>" /><?php } ?>
+<base href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>" />
+<?php if ($description) { ?><meta name="description" content="<?php echo htmlspecialchars(html_entity_decode($description, ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8'); ?>" /><?php } ?>
+<meta name="robots" content="<?php echo isset($robots) ? htmlspecialchars($robots, ENT_QUOTES, 'UTF-8') : 'index,follow'; ?>" />
 <!-- Load essential resources -->
 <script src="catalog/view/javascript/jquery/jquery-2.1.1.min.js"></script>
 <link href="catalog/view/javascript/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
@@ -42,7 +42,7 @@
 <?php foreach ($styles as $style) { ?>
 
 <?php if ($style['href'] != '//fonts.googleapis.com/css?family=%7C') { ?>
-<link href="<?php echo $style['href']; ?>" rel="<?php echo $style['rel']; ?>" media="<?php echo $style['media']; ?>" />
+<link href="<?php echo htmlspecialchars(html_entity_decode($style['href'], ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8'); ?>" rel="<?php echo htmlspecialchars($style['rel'], ENT_QUOTES, 'UTF-8'); ?>" media="<?php echo htmlspecialchars($style['media'], ENT_QUOTES, 'UTF-8'); ?>" />
 <?php } ?>
 <?php } ?>
 <!-- Pluing scripts(s) -->
@@ -52,9 +52,9 @@
 <!-- Page specific meta information -->
 <?php foreach ($links as $link) { ?>
 <?php if ($link['rel'] == 'image') { ?>
-<meta property="og:image" content="<?php echo $link['href']; ?>" />
+<meta property="og:image" content="<?php echo htmlspecialchars(html_entity_decode($link['href'], ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8'); ?>" />
 <?php } else { ?>
-<link href="<?php echo $link['href']; ?>" rel="<?php echo $link['rel']; ?>" />
+<link href="<?php echo htmlspecialchars(html_entity_decode($link['href'], ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8'); ?>" rel="<?php echo htmlspecialchars($link['rel'], ENT_QUOTES, 'UTF-8'); ?>" />
 <?php } ?>
 <?php } ?>
 <!-- Analytic tools -->

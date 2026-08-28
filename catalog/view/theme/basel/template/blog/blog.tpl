@@ -18,7 +18,7 @@
     
     <?php if($main_thumb && $blogsetting_post_thumb){ ?>
     <div class="main_thumb">
-    <img src="image/<?php echo $main_thumb; ?>" alt="<?php echo $heading_title; ?>" title="<?php echo $heading_title; ?>" />
+    <img src="<?php echo htmlspecialchars($main_thumb_url, ENT_QUOTES, 'UTF-8'); ?>" width="<?php echo (int)$img_width; ?>" height="<?php echo (int)$img_height; ?>" alt="<?php echo htmlspecialchars($heading_title, ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars($heading_title, ENT_QUOTES, 'UTF-8'); ?>" fetchpriority="high" decoding="async" />
     <?php if($post_date_added_status){ ?>
     <div class="date_added">
     <span class="day"><?php echo date("d",strtotime($date_added_full));?></span>
@@ -143,40 +143,7 @@ $('.pinterest_share').attr("href", 'http://pinterest.com/pin/create/button/?url=
 $('.vk_share').attr("href", 'http://vkontakte.ru/share.php?url=' + share_url + '');
 </script>
 
-<script type="application/ld+json">
-{
-"@context": "http://schema.org",
-"@type": "NewsArticle",
-"mainEntityOfPage": {
-"@type": "WebPage",
-"@id": "https://google.com/article"
-},
-"headline": "<?php echo $heading_title ?>",
-<?php if($main_thumb){ ?>
-"image": {
-"@type": "ImageObject",
-"url": "<?php echo $main_thumb ?>",
-"height": <?php echo $img_height ?>,
-"width": <?php echo $img_width ?>
-},
+<?php if (!empty($blog_json_ld)) { ?>
+<script type="application/ld+json"><?php echo $blog_json_ld; ?></script>
 <?php } ?>
-"datePublished": "<?php echo $date_added_full ?>",
-"dateModified": "<?php echo $date_added_full ?>",
-"author": {
-"@type": "Person",
-"name": "<?php echo $author ?>"
-},
-"publisher": {
-"@type": "Organization",
-"name": "<?php echo $store ?>",
-<?php if($logo){ ?>
-"logo": {
-"@type": "ImageObject",
-"url": "<?php echo $logo ?>"
-}
-<?php } ?>
-},
-"description": "<?php echo $short_description ?>"
-}
-</script>
-<?php echo $footer; ?> 
+<?php echo $footer; ?>

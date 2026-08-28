@@ -2,6 +2,7 @@
 class ControllerErrorNotFound extends Controller {
 	public function index() {
 		$this->load->language('error/not_found');
+		$this->request->server['SEO_NOT_FOUND'] = true;
 
 		$this->document->setTitle($this->language->get('heading_title'));
 

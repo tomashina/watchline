@@ -167,7 +167,7 @@ class ModelExtensionHbseoHbBrokenlinks extends Model {
 	}
 	
 	public function updateRecord($id, $redirect, $type = '301') {
-		$this->db->query("UPDATE `" . DB_PREFIX . "error` SET redirect = '".$this->db->escape($redirect)."',`type` = '".$type."' WHERE id = '" . (int)$id . "'");
+		$this->db->query("UPDATE `" . DB_PREFIX . "error` SET redirect = '".$this->db->escape($redirect)."', `type` = '".$type."', `author` = '2' WHERE id = '" . (int)$id . "'");
 	}
 	
 	

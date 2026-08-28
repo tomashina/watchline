@@ -242,10 +242,11 @@
 			break;
 			}}
 			unset($data[$key]);
-			} elseif (isset($data['route']) && $data['route'] ==   'extension/blog/home') {
+			} elseif ($key == 'route' && isset($data['route']) && $data['route'] == 'extension/blog/home') {
 			$blog_home = $this->db->query("SELECT * FROM " . DB_PREFIX . "url_alias WHERE `query` = 'extension/blog/home'");
 			if ($blog_home->num_rows) {
 			$url .= '/' . $blog_home->row['keyword'];
+			unset($data[$key]);
 			} else {
 			$url = '';
 			}

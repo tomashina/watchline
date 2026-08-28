@@ -1,5 +1,7 @@
 <?php
 class ModelExtensionHbseoHbCanonical extends Model {
+	private $hb_extension_version = '4.0.1';
+
 	public function install(){
 		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "category_canonical` (
 			`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -22,10 +24,20 @@ class ModelExtensionHbseoHbCanonical extends Model {
 			PRIMARY KEY (`id`)
 		)DEFAULT CHARSET=utf8");
 			
-		$this->db->query("ALTER TABLE `" . DB_PREFIX . "category_canonical` ADD INDEX( `category_id`);");
-		$this->db->query("ALTER TABLE `" . DB_PREFIX . "product_canonical` ADD INDEX( `product_id`);");
-		$this->db->query("ALTER TABLE `" . DB_PREFIX . "custom_canonical` ADD INDEX( `url`);");
+		if (!$this->db->query("SHOW INDEX FROM `" . DB_PREFIX . "category_canonical` WHERE Key_name = 'category_id'")->num_rows) {
+			$this->db->query("ALTER TABLE `" . DB_PREFIX . "category_canonical` ADD INDEX (`category_id`)");
+		}
+		if (!$this->db->query("SHOW INDEX FROM `" . DB_PREFIX . "product_canonical` WHERE Key_name = 'product_id'")->num_rows) {
+			$this->db->query("ALTER TABLE `" . DB_PREFIX . "product_canonical` ADD INDEX (`product_id`)");
+		}
+		if (!$this->db->query("SHOW INDEX FROM `" . DB_PREFIX . "custom_canonical` WHERE Key_name = 'url'")->num_rows) {
+			$this->db->query("ALTER TABLE `" . DB_PREFIX . "custom_canonical` ADD INDEX (`url`)");
+		}
 			
+		$this->syncModification();
+	}
+
+	public function syncModification() {
 		if ((version_compare(VERSION,'2.0.0.0','>=' )) and (version_compare(VERSION,'2.1.0.0','<' ))) {
 			$ocmod_filename = 'ocmod_canonical_20xx.txt';
 			$ocmod_name = 'SEO - Canonical URL [20xx]';
@@ -47,15 +59,35 @@ class ModelExtensionHbseoHbCanonical extends Model {
 		$ocmod_code = 'huntbee_seo_canonical_ocmod';	
 		$ocmod_author = 'HuntBee OpenCart Services';
 		$ocmod_link = 'https://www.huntbee.com/';
-		
-		$this->db->query("DELETE FROM " . DB_PREFIX . "modification WHERE `code` = '".$this->db->escape($ocmod_code)."'");
-		
+
 		$file = DIR_APPLICATION . 'view/template/extension/hbseo/ocmod/'.$ocmod_filename;
-		if (file_exists($file)) {
-			$ocmod_xml = file_get_contents($file, FILE_USE_INCLUDE_PATH, null);
-			$ocmod_xml = str_replace('{huntbee_version}',$ocmod_version,$ocmod_xml);
-			$this->db->query("INSERT INTO " . DB_PREFIX . "modification SET code = '" . $this->db->escape($ocmod_code) . "', name = '" . $this->db->escape($ocmod_name) . "', author = '" . $this->db->escape($ocmod_author) . "', version = '" . $this->db->escape($ocmod_version) . "', link = '" . $this->db->escape($ocmod_link) . "', xml = '" . $this->db->escape($ocmod_xml) . "', status = '1', date_added = NOW()");
-		}	
+
+		if (!is_file($file)) {
+			return false;
+		}
+
+		$ocmod_xml = file_get_contents($file);
+		if ($ocmod_xml === false) {
+			return false;
+		}
+
+		$ocmod_xml = str_replace('{huntbee_version}', $ocmod_version, $ocmod_xml);
+		$dom = new DOMDocument('1.0', 'UTF-8');
+		$dom->preserveWhiteSpace = false;
+		if (!$dom->loadXML($ocmod_xml) || !$dom->getElementsByTagName('code')->length || trim($dom->getElementsByTagName('code')->item(0)->textContent) !== $ocmod_code) {
+			return false;
+		}
+
+		$current = $this->db->query("SELECT modification_id FROM " . DB_PREFIX . "modification WHERE code = '" . $this->db->escape($ocmod_code) . "' LIMIT 1");
+		$values = "name = '" . $this->db->escape($ocmod_name) . "', author = '" . $this->db->escape($ocmod_author) . "', version = '" . $this->db->escape($ocmod_version) . "', link = '" . $this->db->escape($ocmod_link) . "', xml = '" . $this->db->escape($ocmod_xml) . "'";
+
+		if ($current->row) {
+			$this->db->query("UPDATE " . DB_PREFIX . "modification SET " . $values . " WHERE modification_id = '" . (int)$current->row['modification_id'] . "'");
+		} else {
+			$this->db->query("INSERT INTO " . DB_PREFIX . "modification SET code = '" . $this->db->escape($ocmod_code) . "', " . $values . ", status = '1', date_added = NOW()");
+		}
+
+		return true;
 	}
 	
 	public function uninstall() {

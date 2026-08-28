@@ -287,7 +287,7 @@ class ControllerExtensionHbseoHbSeourl extends Controller {
 				foreach ($records as $record) {
 					$old_path = urlencode($store_url.$record['old_keyword']);
 					$new_path = urlencode($store_url.$record['new_keyword']);
-					$this->model_extension_hbseo_hb_brokenlinks->insertRecord($old_path, $new_path, $type = '301', $author = 3, $store_id);
+					$this->model_extension_hbseo_hb_brokenlinks->insertRecord($old_path, $new_path, $type = '301', $author = 2, $store_id);
 				}
 				$json['success'] = 'Record(s) added to Redirect Manager';
 			}else{

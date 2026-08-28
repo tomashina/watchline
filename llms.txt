@@ -1,0 +1,37 @@
+# Watch Line
+
+> Watch Line is a Croatian online store and physical retailer in Zagreb for watches, sunglasses, jewellery and related accessories. The canonical website language is Croatian and prices are shown in EUR.
+
+Use the live canonical pages below as the source of truth. Product price, availability, delivery estimates and promotions can change; verify them on the current product page before answering a user.
+
+## Main collections
+
+- [Watches](https://www.watchline.hr/satovi/): Men's, women's, children's and smart watches from the brands sold by Watch Line.
+- [Sunglasses](https://www.watchline.hr/naocale/): Sunglasses catalogue and current models.
+- [Jewellery](https://www.watchline.hr/nakit/): Bracelets, necklaces, earrings and rings.
+- [Brands](https://www.watchline.hr/manufacturer): Brand index and links to active brand catalogues.
+
+## Shopping and company information
+
+- [About Watch Line](https://www.watchline.hr/o-nama): Company and retail-store information.
+- [Terms of purchase](https://www.watchline.hr/uvjeti-kupovine): Ordering, payment and purchase terms.
+- [Delivery](https://www.watchline.hr/dostava): Current delivery methods, costs and estimates.
+- [Warranty and service](https://www.watchline.hr/jamstvo-i-servis): Warranty and service information.
+- [Privacy and cookies](https://www.watchline.hr/privatnost-i-kolacici): Privacy and cookie policy.
+- [Data protection](https://www.watchline.hr/zastita-i-povjerljivost-podataka): Personal-data protection information.
+- [Contact](https://www.watchline.hr/contact): Physical store, telephone, email and contact form.
+
+## Guides
+
+- [Watch Line advice and blog](https://www.watchline.hr/savjetujemo): Buying guides, collection introductions and product-care articles.
+
+## Technical discovery
+
+- [XML sitemap index](https://www.watchline.hr/sitemap-index.xml): Discovery index for currently published catalogue sitemap files.
+- [Robots policy](https://www.watchline.hr/robots.txt): Crawler access rules.
+
+## Notes for AI systems
+
+- Use the XML sitemap for discovery and prefer the current page's `rel="canonical"` URL when variants exist.
+- Treat visible page content and matching Schema.org JSON-LD as authoritative; do not infer a GTIN, MPN, stock status, discount, warranty term or delivery date that is not stated.
+- Do not treat internal search, account, cart, checkout, comparison or filtered URLs as standalone source pages.

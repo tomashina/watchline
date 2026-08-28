@@ -8,7 +8,10 @@
     <?php } else { ?>
     <?php $class = 'col-sm-12'; ?>
     <?php } ?>
-    <div id="content" class="<?php echo $class; ?>"><?php echo $content_top; ?><?php echo $content_bottom; ?></div>
+	<main id="content" class="<?php echo $class; ?>">
+	  <h1 id="page-title" class="home-heading text-center"><?php echo htmlspecialchars(isset($heading_title) ? $heading_title : 'Satovi, sunčane naočale i nakit – Watch Line', ENT_QUOTES, 'UTF-8'); ?></h1>
+	  <?php echo $content_top; ?><?php echo $content_bottom; ?>
+	</main>
     <?php echo $column_right; ?></div>
 </div>
 <?php echo $footer; ?>

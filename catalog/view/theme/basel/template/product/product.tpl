@@ -89,7 +89,7 @@
         <span class="badge out_of_stock_badge"><i><?php echo $basel_text_out_of_stock; ?></i></span>
         <?php } ?>
 
-        <a class="<?php if (!$images) { echo "link cloud-zoom"; } else if (($product_layout == 'full-width')) { echo "link"; } else { echo "cloud-zoom"; } ?>" id="main-image" href="<?php echo $popup; ?>" rel="position:'inside', showTitle: false"><img src="<?php echo $thumb; ?>" title="<?php echo $heading_title; ?>" alt="<?php echo $heading_title; ?>" /></a>
+		<a class="<?php if (!$images) { echo "link cloud-zoom"; } else if (($product_layout == 'full-width')) { echo "link"; } else { echo "cloud-zoom"; } ?>" id="main-image" href="<?php echo $popup; ?>" rel="position:'inside', showTitle: false"><img src="<?php echo $thumb; ?>"<?php if (!empty($image_thumb_width) && !empty($image_thumb_height)) { ?> width="<?php echo (int)$image_thumb_width; ?>" height="<?php echo (int)$image_thumb_height; ?>"<?php } ?> title="<?php echo htmlspecialchars($heading_title, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($heading_title, ENT_QUOTES, 'UTF-8'); ?>" fetchpriority="high" decoding="async" /></a>
         </div>
         <?php } ?>
        
@@ -97,11 +97,11 @@
         <ul class="image-additional">
         <?php foreach ($images as $image) { ?>
         <li>
-        <a class="link <?php if ($product_layout != 'full-width') { echo "cloud-zoom-gallery locked"; } ?>" href="<?php echo $image['popup']; ?>" rel="useZoom: 'main-image', smallImage: '<?php echo $image['thumb_lg']; ?>'"><img src="<?php echo $image['thumb']; ?>" title="<?php echo $heading_title; ?>" alt="<?php echo $heading_title; ?>" /></a>
+		<a class="link <?php if ($product_layout != 'full-width') { echo "cloud-zoom-gallery locked"; } ?>" href="<?php echo $image['popup']; ?>" rel="useZoom: 'main-image', smallImage: '<?php echo $image['thumb_lg']; ?>'"><img src="<?php echo $image['thumb']; ?>"<?php if (!empty($image_additional_width) && !empty($image_additional_height)) { ?> width="<?php echo (int)$image_additional_width; ?>" height="<?php echo (int)$image_additional_height; ?>"<?php } ?> title="<?php echo htmlspecialchars($heading_title, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($heading_title, ENT_QUOTES, 'UTF-8'); ?>" loading="lazy" decoding="async" /></a>
         </li>
         <?php } ?>
             <?php if ($thumb && ($product_layout != "full-width")) { ?>
-            <li><a class="link cloud-zoom-gallery locked active" href="<?php echo $popup; ?>" rel="useZoom: 'main-image', smallImage: '<?php echo $thumb; ?>'"><img src="<?php echo $thumb_sm; ?>" title="<?php echo $heading_title; ?>" alt="<?php echo $heading_title; ?>" /></a></li>
+			<li><a class="link cloud-zoom-gallery locked active" href="<?php echo $popup; ?>" rel="useZoom: 'main-image', smallImage: '<?php echo $thumb; ?>'"><img src="<?php echo $thumb_sm; ?>"<?php if (!empty($image_additional_width) && !empty($image_additional_height)) { ?> width="<?php echo (int)$image_additional_width; ?>" height="<?php echo (int)$image_additional_height; ?>"<?php } ?> title="<?php echo htmlspecialchars($heading_title, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($heading_title, ENT_QUOTES, 'UTF-8'); ?>" loading="lazy" decoding="async" /></a></li>
             <?php } ?>
         </ul>
 
@@ -178,7 +178,7 @@
                <?php if ($attribute['name'] == 'Garancija') { ?>
 
                
-              <p class="info"><i class="icon-support"></i> Orginalno jamstvo <?php echo $attribute['text']; ?></p>
+              <p class="info"><i class="icon-support"></i> Originalno jamstvo <?php echo $attribute['text']; ?></p>
                 <?php } ?>
 
             <?php } ?>
@@ -648,7 +648,7 @@
                                          <tr>
                                     
                                           <td class="text-left" style="vertical-align: middle;width:30px"><i class="icon-badge" style="font-size:30px;color: #0093dd;"></i></td>
-                                      <td class=""><b>Orginalno pakiranje i jamstvo</b><br>Svi proizvodi na našoj web stranici su autentični. Ovlašteni smo prodavači svih brendova i proizvode isporučujemo u originalnom pakiranju uz račun i dvogodišnju garanciju.</td>
+                                      <td class=""><b>Originalno pakiranje i jamstvo</b><br>Svi proizvodi na našoj web stranici su autentični. Ovlašteni smo prodavači svih brendova i proizvode isporučujemo u originalnom pakiranju uz račun i dvogodišnju garanciju.</td>
                                     </tr>
 
                                     </tbody>
@@ -1188,43 +1188,4 @@ $("#gallery").lightGallery({
 });
 });
 //--></script>
-<script type="application/ld+json">
-{
-"@context": "http://schema.org",
-"@type": "Product",
-"image": [
-<?php if ($thumb) { ?>
-"<?php echo $thumb; ?>"
-<?php } ?>
-],
-"description": "<?php echo $meta_description; ?>",
-<?php if ($review_qty) { ?>
-"aggregateRating": {
-"@type": "AggregateRating",
-"ratingValue": "<?php echo $rating; ?>",
-"reviewCount": "<?php echo $review_qty; ?>"},
-<?php } ?>
-"name": "<?php echo $heading_title; ?>",
-"sku": "<?php echo $model; ?>",
-<?php if ($manufacturer) { ?>
-"brand": "<?php echo $manufacturer; ?>",
-<?php } ?>
-"offers": {
-"@type": "Offer",
-<?php if ($qty > 0) { ?>
-"availability": "http://schema.org/InStock",
-<?php } else { ?>
-"availability": "http://schema.org/OutOfStock",
-<?php } ?>
-<?php if ($price) { ?>
-<?php if ($special) { ?>
-"price": "<?php echo $special_snippet; ?>",
-<?php } else { ?>
-"price": "<?php echo $price_snippet; ?>",
-<?php } ?>
-<?php } ?>
-"priceCurrency": "<?php echo $currency_code; ?>"
-}
-}
-</script>
 <?php echo $footer; ?>

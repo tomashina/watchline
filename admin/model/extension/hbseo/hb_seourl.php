@@ -254,7 +254,21 @@ class ModelExtensionHbseoHbSeourl extends Model {
 		}
 	}
 	
+	private function normalizeKeyword($keyword) {
+		$keyword = html_entity_decode((string)$keyword, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+		$keyword = preg_replace('/\s+/u', '-', trim($keyword));
+		$keyword = preg_replace('/-+/u', '-', $keyword);
+
+		return trim($keyword, '-');
+	}
+
 	public function addurlentry($query, $keyword, $language_id, $store_id, $preserve = false){
+		$keyword = $this->normalizeKeyword($keyword);
+
+		if ($keyword === '') {
+			return false;
+		}
+
 		if (version_compare(VERSION,'3.0.0.0','<')){
 			$sql = "INSERT INTO `" . DB_PREFIX . "url_alias` (`query`,`keyword`,`language_id`) VALUES ('".$this->db->escape($query)."','".$this->db->escape($keyword)."','".(int)$language_id."')";
 		} else {
@@ -265,6 +279,8 @@ class ModelExtensionHbseoHbSeourl extends Model {
 		if ($preserve) {
 			$this->db->query("UPDATE `".DB_PREFIX."hb_url_preserve` SET `new_keyword` = '".$this->db->escape($keyword)."' WHERE `query` = '".$this->db->escape($query)."' AND `language_id` = '".(int)$language_id."' AND `store_id` = '".(int)$store_id."'");
 		}
+
+		return $keyword;
 	}
 
 	

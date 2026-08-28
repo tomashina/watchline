@@ -144,7 +144,13 @@ class ControllerExtensionBlogBlog extends Controller {
 			$this->document->setDescription($blog_info['meta_description']);
 			$this->document->setKeywords($blog_info['meta_keyword']);
 			
-			$this->document->addLink($this->url->link('extension/blog/blog', 'blog_id=' . $this->request->get['blog_id']), 'canonical');
+				$canonical_url = html_entity_decode(
+					$this->url->link('extension/blog/blog', 'blog_id=' . $this->request->get['blog_id']),
+					ENT_QUOTES | ENT_HTML5,
+					'UTF-8'
+				);
+				$this->document->addLink($canonical_url, 'canonical');
+				$data['canonical_url'] = $canonical_url;
 										
       		$data['heading_title'] = $blog_info['title'];
 			
@@ -162,11 +168,13 @@ class ControllerExtensionBlogBlog extends Controller {
 			$data['img_height'] = 700;
 			}
 	      	
-			if ($blog_info['image']) {
-			$data['main_thumb'] = $blog_info['image'];
-			$this->document->addLink($data['main_thumb'], 'image');
-			} else {
-			$data['main_thumb'] = false;
+					if ($blog_info['image']) {
+					$data['main_thumb'] = $blog_info['image'];
+					$data['main_thumb_url'] = $this->model_tool_image->resize($blog_info['image'], $data['img_width'], $data['img_height']);
+					$this->document->addLink($data['main_thumb_url'], 'image');
+				} else {
+				$data['main_thumb'] = false;
+				$data['main_thumb_url'] = false;
 			}
 			
 			$data['tags'] = array();
@@ -281,11 +289,7 @@ class ControllerExtensionBlogBlog extends Controller {
 			
 			$data['store'] = $this->config->get('config_name');
 			
-			if ($this->request->server['HTTPS']) {
-				$server = $this->config->get('config_ssl');
-			} else {
-				$server = $this->config->get('config_url');
-			}
+				$server = rtrim($this->config->get('config_ssl') ?: $this->config->get('config_url'), '/') . '/';
 			
 			if (is_file(DIR_IMAGE . $this->config->get('config_logo'))) {
 				$data['logo'] = $server . 'image/' . $this->config->get('config_logo');
@@ -315,7 +319,91 @@ class ControllerExtensionBlogBlog extends Controller {
 
 			$data['date_added_full'] = $blog_info['date_added'];
 			
-			$data['author'] = $blog_info['author'];
+				$data['author'] = $blog_info['author'];
+
+				$schema_description = html_entity_decode(
+					$blog_info['meta_description'] ? $blog_info['meta_description'] : $blog_info['short_description'],
+					ENT_QUOTES | ENT_HTML5,
+					'UTF-8'
+				);
+				$schema_description = preg_replace('/\s+/u', ' ', trim(strip_tags($schema_description)));
+				$organization_id = rtrim($server, '/') . '/#organization';
+				$author_name = trim(strip_tags(html_entity_decode($blog_info['author'], ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+
+					$organization_author = $author_name === ''
+						|| strcasecmp($author_name, 'John Doe') === 0
+						|| strcasecmp($author_name, $this->config->get('config_name')) === 0
+						|| preg_match('/^watch\s*line(?:\s*am)?(?:\s*-\s*web\s*shop)?(?:\s+d\.?o\.?o\.?)?$/iu', $author_name);
+
+					if ($organization_author) {
+						$schema_author = array('@id' => $organization_id);
+					} else {
+						$schema_author = array(
+							'@type' => 'Person',
+							'name' => $author_name
+						);
+					}
+
+					$article_schema = array(
+						'@type' => 'BlogPosting',
+						'@id' => $canonical_url . '#article',
+						'url' => $canonical_url,
+						'mainEntityOfPage' => array('@id' => $canonical_url . '#webpage'),
+						'headline' => trim(strip_tags(html_entity_decode($blog_info['title'], ENT_QUOTES | ENT_HTML5, 'UTF-8'))),
+						'description' => $schema_description,
+						'datePublished' => date('c', strtotime($blog_info['date_added'])),
+						'author' => $schema_author,
+						'publisher' => array('@id' => $organization_id),
+						'isPartOf' => array('@id' => rtrim($server, '/') . '/#website'),
+						'inLanguage' => $this->config->get('config_language')
+					);
+
+					if ($data['main_thumb_url']) {
+						$article_schema['image'] = array(
+							'@type' => 'ImageObject',
+							'url' => $data['main_thumb_url'],
+							'width' => (int)$data['img_width'],
+							'height' => (int)$data['img_height']
+						);
+					}
+
+					$organization_schema = array(
+						'@type' => 'OnlineStore',
+						'@id' => $organization_id,
+						'name' => 'Watch Line',
+						'legalName' => 'WATCH LINE AM d.o.o.',
+						'alternateName' => $this->config->get('config_name'),
+						'url' => rtrim($server, '/') . '/'
+					);
+
+					if ($data['logo']) {
+						$organization_schema['logo'] = array(
+							'@type' => 'ImageObject',
+							'url' => $data['logo']
+						);
+					}
+
+					$webpage_schema = array(
+						'@type' => 'WebPage',
+						'@id' => $canonical_url . '#webpage',
+						'url' => $canonical_url,
+						'name' => $article_schema['headline'],
+						'isPartOf' => array('@id' => rtrim($server, '/') . '/#website'),
+						'mainEntity' => array('@id' => $canonical_url . '#article')
+					);
+
+					$data['blog_json_ld'] = json_encode(
+						array(
+							'@context' => 'https://schema.org',
+							'@graph' => array($webpage_schema, $article_schema, $organization_schema)
+						),
+					JSON_UNESCAPED_SLASHES |
+					JSON_UNESCAPED_UNICODE |
+					JSON_HEX_TAG |
+					JSON_HEX_AMP |
+					JSON_HEX_APOS |
+					JSON_HEX_QUOT
+				);
 			
 			$data['allow_comment'] = $blog_info['allow_comment'];
 			

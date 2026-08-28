@@ -72,5 +72,9 @@ class ModelExtensionModification extends Model {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "modification WHERE code = '" . $this->db->escape($code) . "'");
 
 		return $query->row;
+	}
+
+	public function updateModificationXmlByCode($code, $xml) {
+		$this->db->query("UPDATE " . DB_PREFIX . "modification SET xml = '" . $this->db->escape($xml) . "' WHERE code = '" . $this->db->escape($code) . "'");
 	}	
 }

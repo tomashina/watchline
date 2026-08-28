@@ -1333,14 +1333,4 @@
 		</operation>
 	</file>
 	
-	<file path="catalog/view/theme/*/template/common/header.tpl" error="log">
-		<operation error="log">
-			<search><![CDATA[</head>]]></search>
-			<add position="replace"><![CDATA[
-				<?php if( ! empty( $mfp_robots_value ) ) { ?><meta name="robots" content="<?php echo $mfp_robots_value; ?>" /><?php } ?>
-				</head>
-			]]></add>
-		</operation>
-	</file>
-
 </modification>

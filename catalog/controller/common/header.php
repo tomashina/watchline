@@ -32,8 +32,61 @@ class ControllerCommonHeader extends Controller {
 		$data['links'] = $this->document->getLinks();
 		$data['styles'] = $this->document->getStyles();
 		$data['scripts'] = $this->document->getScripts();
-		$data['lang'] = $this->language->get('code');
-		$data['direction'] = $this->language->get('direction');
+			$data['lang'] = $this->language->get('code');
+			$data['direction'] = $this->language->get('direction');
+
+			$route = isset($this->request->get['route']) ? $this->request->get['route'] : 'common/home';
+			$noindex = false;
+			$noindex_prefixes = array(
+				'account/',
+				'affiliate/',
+				'checkout/',
+				'api/',
+				'error/'
+			);
+			$noindex_routes = array(
+				'product/search',
+				'product/compare',
+				'information/sitemap'
+			);
+
+			foreach ($noindex_prefixes as $prefix) {
+				if (strpos($route, $prefix) === 0) {
+					$noindex = true;
+					break;
+				}
+			}
+
+			if (in_array($route, $noindex_routes, true)) {
+				$noindex = true;
+			}
+
+			if (!empty($this->request->server['SEO_NOT_FOUND'])) {
+				$noindex = true;
+			}
+
+			if ($route === 'extension/blog/home' && !empty($this->request->get['tag'])) {
+				$noindex = true;
+			}
+
+			if (in_array($route, array('product/category', 'product/manufacturer/info', 'product/special'), true)) {
+				foreach (array('sort', 'order', 'limit', 'filter', 'tf_fc') as $parameter) {
+					if (isset($this->request->get[$parameter])) {
+						$noindex = true;
+						break;
+					}
+				}
+
+				$mfilter_parameter = $this->config->get('mfilter_url_param') ?: 'mfp';
+				$is_curated_filter = isset($this->request->request['mfp_seo_alias']);
+				if (!$is_curated_filter && !empty($this->request->get[$mfilter_parameter])) {
+					$noindex = true;
+				}
+			}
+
+			$data['robots'] = $noindex
+				? 'noindex,follow'
+				: 'index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1';
 
 		$data['name'] = $this->config->get('config_name');
 
@@ -84,7 +137,7 @@ class ControllerCommonHeader extends Controller {
 		$data['checkout'] = $this->url->link('checkout/checkout', '', true);
 		$data['contact'] = $this->url->link('information/contact');
 
-		$data['route'] = isset($this->request->get['route']) ? $this->request->get['route'] : 'common/home';
+			$data['route'] = $route;
 		$data['telephone'] = $this->config->get('config_telephone');
 
 		// Menu

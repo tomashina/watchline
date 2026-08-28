@@ -249,23 +249,6 @@
         
 	</file>
 	
-	<!--PRODUCT CANONICAL-->
-	<file path="catalog/controller/product/product.php">
-		<operation>
-            <search><![CDATA[$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');]]></search>
-            <add position="replace">
-            <![CDATA[
-            if ($this->config->get('hb_canonical_status')) {
-			    $this->load->model('extension/module/hb_canonical');
-			    $this->model_extension_module_hb_canonical->product_canonical($this->request->get['product_id']);
-    		}else{
-    		    $this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');
-    		}
-            ]]>
-            </add>
-        </operation>
-	</file>
-		
 <!-- CATEGORY CANONICAL -->
 	<file path="catalog/controller/product/category.php">
 		<operation>
@@ -344,16 +327,12 @@
             <search><![CDATA[$data['pagination'] = $pagination->render();]]></search>
             <add position="after">
                 <![CDATA[
-				$pagenum = '';
-    			if (isset($this->request->get['page'])){
-                    $pagenum= '&page='.$this->request->get['page'];
-                }
-                
-                if ($pagenum == 1) {
-    			    $this->document->addLink($this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'], true), 'canonical');
-    			}else{
-    			    $this->document->addLink($this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'].$pagenum, true), 'canonical');
-    			}
+					$canonical_page = max(1, (int)$pagination->page);
+					$canonical_args = 'manufacturer_id=' . (int)$this->request->get['manufacturer_id'];
+					if ($canonical_page > 1) {
+						$canonical_args .= '&page=' . $canonical_page;
+					}
+					$this->document->addLink($this->url->link('product/manufacturer/info', $canonical_args, true), 'canonical');
                 	
     			if ($pagination->limit && ceil($pagination->total / $pagination->limit) > $pagination->page) {
     				$this->document->addLink($this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'] . '&page=' . ($pagination->page + 1)), 'next');
@@ -411,26 +390,22 @@
             */ 
             
             
-            if (isset($this->request->get['tag'])){
-                $canonical_query = '&tag='.$this->request->get['tag'];
-            }elseif (isset($this->request->get['search'])){
-                $canonical_query = '&search='.$this->request->get['search'];
-            }else{
-                $canonical_query = '';
-            }
-            
-            
-    		if (isset($this->request->get['page'])){
-                $pagenum= '&page='.$this->request->get['page'];
-            }else{
-                $pagenum = '';
-            }
-            
-            if ($pagenum == 1) {
-			    $this->document->addLink($this->url->link('product/search', $canonical_query, true), 'canonical');
-			}else{
-			    $this->document->addLink($this->url->link('product/search', $canonical_query.$pagenum, true), 'canonical');
-			}
+	            $canonical_base_params = array();
+	            if (isset($this->request->get['tag'])) {
+	                $canonical_base_params['tag'] = $this->request->get['tag'];
+	            } elseif (isset($this->request->get['search'])) {
+	                $canonical_base_params['search'] = $this->request->get['search'];
+	            }
+
+	            $canonical_params = $canonical_base_params;
+	            $canonical_page = max(1, (int)$pagination->page);
+	            if ($canonical_page > 1) {
+	                $canonical_params['page'] = $canonical_page;
+	            }
+
+	            $canonical_query = http_build_query($canonical_base_params);
+	            $canonical_current_query = http_build_query($canonical_params);
+	            $this->document->addLink($this->url->link('product/search', $canonical_current_query, true), 'canonical');
             	
 			if ($pagination->limit && ceil($pagination->total / $pagination->limit) > $pagination->page) {
 				$this->document->addLink($this->url->link('product/search', $canonical_query. '&page=' . ($pagination->page + 1)), 'next');
@@ -481,16 +456,9 @@
             <search><![CDATA[$data['pagination'] = $pagination->render();]]></search>
             <add position="after">
                 <![CDATA[
-                    $pagenum = '';
-
-        			if (isset($this->request->get['page'])){
-                        $pagenum= '&page='.$this->request->get['page'];
-                    }
-        			if ($pagenum == 1) {
-        			    $this->document->addLink($this->url->link('product/special'), 'canonical');
-        			}else{
-        			    $this->document->addLink($this->url->link('product/special', $pagenum), 'canonical');
-        			}
+						$canonical_page = max(1, (int)$pagination->page);
+						$canonical_args = $canonical_page > 1 ? 'page=' . $canonical_page : '';
+						$this->document->addLink($this->url->link('product/special', $canonical_args), 'canonical');
         			
     	
         			if ($pagination->limit && ceil($pagination->total / $pagination->limit) > $pagination->page) {

@@ -48,7 +48,9 @@ class ControllerExtensionHbseoHbCanonical extends Controller {
 		
 		//Save the settings if the user has submitted the admin form (ie if someone has pressed save).
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-			$this->model_setting_setting->editSetting('hb_canonical', $this->request->post, $this->request->get['store_id']);	
+			$this->model_setting_setting->editSetting('hb_canonical', $this->request->post, $this->request->get['store_id']);
+			$this->load->model('extension/hbseo/hb_canonical');
+			$this->model_extension_hbseo_hb_canonical->syncModification();
 			$this->session->data['success'] = $this->language->get('text_success');
 			$this->response->redirect($this->url->link($this->hb_extension_route.'/hb_canonical', $this->hb_token_name.'=' . $this->session->data[$this->hb_token_name].'&store_id='.$data['store_id'], true));
 		}

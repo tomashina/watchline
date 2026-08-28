@@ -11,8 +11,16 @@ Options -Indexes
 
 RewriteEngine On
 RewriteBase /
+
+# One canonical production origin. Keep these rules before the front controller.
+RewriteCond %{HTTP_HOST} !^www\.watchline\.hr$ [NC]
+RewriteRule ^ https://www.watchline.hr%{REQUEST_URI} [R=301,L,NE]
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+RewriteRule ^ https://www.watchline.hr%{REQUEST_URI} [R=301,L,NE]
+
 RewriteRule ^(?:system|vqmod)/ - [F,L,NC]
-RewriteRule ^sitemap\.xml$ index.php?route=extension/feed/google_sitemap [L,QSA]
+RewriteRule ^sitemap\.xml$ /sitemap-index.xml [R=301,L,NE]
 RewriteRule ^googlebase\.xml$ index.php?route=extension/feed/google_base [L,QSA]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

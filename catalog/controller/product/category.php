@@ -28,15 +28,23 @@ class ControllerProductCategory extends Controller {
 		}
 
 		if (isset($this->request->get['page'])) {
-			$page = $this->request->get['page'];
+			$page = (int)$this->request->get['page'];
 		} else {
 			$page = 1;
+		}
+
+		if ($page < 1) {
+			return new Action('error/not_found');
 		}
 
 		if (isset($this->request->get['limit'])) {
 			$limit = (int)$this->request->get['limit'];
 		} else {
-			$limit = $this->config->get($this->config->get('config_theme') . '_product_limit');
+			$limit = (int)$this->config->get($this->config->get('config_theme') . '_product_limit');
+		}
+
+		if ($limit < 1) {
+			$limit = 24;
 		}
 
 		$data['breadcrumbs'] = array();
@@ -91,7 +99,12 @@ class ControllerProductCategory extends Controller {
 
 		if ($category_info) {
 			$this->document->setTitle($category_info['meta_title']);
-			$this->document->setDescription($category_info['meta_description']);
+			$meta_description = trim(html_entity_decode($category_info['meta_description'], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+			if ($meta_description === '' && !empty($category_info['description'])) {
+				$meta_description = preg_replace('/\s+/u', ' ', trim(strip_tags(html_entity_decode($category_info['description'], ENT_QUOTES | ENT_HTML5, 'UTF-8'))));
+				$meta_description = utf8_substr($meta_description, 0, 160);
+			}
+			$this->document->setDescription($meta_description);
 			$this->document->setKeywords($category_info['meta_keyword']);
 
 			$data['heading_title'] = $category_info['name'];
@@ -176,6 +189,11 @@ class ControllerProductCategory extends Controller {
 			);
 
 			$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
+
+			$max_pages = max(1, (int)ceil($product_total / $limit));
+			if ($page > $max_pages) {
+				return new Action('error/not_found');
+			}
 
 			$results = $this->model_catalog_product->getProducts($filter_data);
 

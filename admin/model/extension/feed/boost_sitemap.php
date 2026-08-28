@@ -33,7 +33,8 @@ class ModelExtensionFeedBoostSitemap extends Model {
 		$this->load->model('setting/setting');
 		
 		$data = [
-			'boost_sitemap_item_limit'	 => '1000'
+			'boost_sitemap_item_limit' => '1000',
+			'boost_sitemap_item' => array('product', 'category', 'manufacturer', 'information', 'blog')
 		];
 		
 		$this->model_setting_setting->editSetting('boost_sitemap', $data);
@@ -408,6 +409,26 @@ class ModelExtensionFeedBoostSitemap extends Model {
 		$query = $this->db->query($sql);
 		
 		return $query->row['total'];
+	}
+
+	public function getBlogs($data = array()) {
+		$sql = "SELECT b.blog_id, b.date_added, b.image, bd.title FROM " . DB_PREFIX . "blog b LEFT JOIN " . DB_PREFIX . "blog_description bd ON (b.blog_id = bd.blog_id) LEFT JOIN " . DB_PREFIX . "blog_to_store b2s ON (b.blog_id = b2s.blog_id) WHERE b.status = '1' AND b.sort_order <> '-1' AND bd.language_id = '" . (int)$data['language_id'] . "' AND b2s.store_id = '" . (int)$data['store_id'] . "' ORDER BY b.blog_id ASC";
+
+		if (isset($data['start']) || isset($data['limit'])) {
+			$start = isset($data['start']) ? max(0, (int)$data['start']) : 0;
+			$limit = isset($data['limit']) ? max(1, (int)$data['limit']) : 1000;
+			$sql .= " LIMIT " . $start . "," . $limit;
+		}
+
+		$query = $this->db->query($sql);
+
+		return $query->rows;
+	}
+
+	public function getTotalBlogs($data = array()) {
+		$query = $this->db->query("SELECT COUNT(DISTINCT b.blog_id) AS total FROM " . DB_PREFIX . "blog b LEFT JOIN " . DB_PREFIX . "blog_description bd ON (b.blog_id = bd.blog_id) LEFT JOIN " . DB_PREFIX . "blog_to_store b2s ON (b.blog_id = b2s.blog_id) WHERE b.status = '1' AND b.sort_order <> '-1' AND bd.language_id = '" . (int)$data['language_id'] . "' AND b2s.store_id = '" . (int)$data['store_id'] . "'");
+
+		return (int)$query->row['total'];
 	}
 	
 	/**

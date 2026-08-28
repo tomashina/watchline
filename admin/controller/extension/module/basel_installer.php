@@ -73,6 +73,8 @@ class ControllerExtensionModuleBaselInstaller extends Controller {
 		$mod = $this->$modification_prefix->getModificationByCode('basel_theme');
         if (!$mod) {
         $this->$modification_prefix->addModification($data);
+		} elseif (method_exists($this->$modification_prefix, 'updateModificationXmlByCode')) {
+			$this->$modification_prefix->updateModificationXmlByCode('basel_theme', $xml);
 		}
 		
 		

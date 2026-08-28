@@ -49,5 +49,18 @@ first deployment must compare the existing tree with `origin/main`; do not run
 `git clean`, because it would remove shared production data. Later deployments
 can use `git pull --ff-only origin main` after a clean status check.
 
+After taking a full database and filesystem backup, deploy the reviewed SEO
+changes from the production project directory with:
+
+```sh
+git diff --quiet && git diff --cached --quiet && git pull --ff-only origin main && php tools/deploy_seo.php
+```
+
+The deploy finalizer creates targeted JSON backups in the system temporary
+directory, repairs active SEO aliases, synchronizes and refreshes OCMOD, clears
+VQMod caches, regenerates canonical sitemaps and fails if the HTTP, JSON-LD,
+404, `llms.txt` or merchant-feed smoke tests do not pass. It does not replace a
+full hosting/database backup.
+
 `test.php` and `gath.php` are intentionally excluded because the production
 copies contain hard-coded integration credentials and debug output.
