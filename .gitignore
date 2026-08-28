@@ -1,0 +1,66 @@
+# Operating system and editor files
+.DS_Store
+**/.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Environment-specific web server files and secrets
+/.env
+/.env.*
+!/.env.example
+/.htaccess
+/config.php
+/admin/config.php
+
+# Production data and ad-hoc integration scripts
+*.sql
+/webstanje.csv
+/test.php
+/gath.php
+
+# Product images are deployed as shared data, outside Git
+/image/
+
+# OpenCart runtime data
+/system/storage/cache/*
+!/system/storage/cache/.gitkeep
+/system/storage/logs/*
+!/system/storage/logs/index.html
+/system/storage/download/*
+!/system/storage/download/index.html
+/system/storage/upload/*
+!/system/storage/upload/index.html
+/system/storage/modification/*
+!/system/storage/modification/index.html
+/system/cache_mfp/*
+!/system/cache_mfp/.gitkeep
+
+# VQMod generated files
+/vqmod/vqcache/*
+!/vqmod/vqcache/.gitkeep
+/vqmod/logs/*
+!/vqmod/logs/.gitkeep
+/vqmod/checked.cache
+/vqmod/mods.cache
+
+# Generated sitemaps
+/sitemaps/*
+!/sitemaps/.gitkeep
+
+# Server logs and temporary files
+**/error_log
+*.log
+*.tmp
+*.bak
+
+# Unneeded vendor test fixtures (some contain sample credentials/private keys)
+**/vendor/**/test/
+**/vendor/**/tests/
+**/vendor/**/Tests/
+**/vendor/**/examples/
+/catalog/controller/extension/payment/kekspay/chillerlan/php-qrcode/tests/
+/catalog/controller/extension/payment/kekspay/chillerlan/php-settings-container/tests/
+
+# Broken nested repository metadata copied from production
+/wolt.watchline.hr/.git/

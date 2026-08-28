@@ -1,0 +1,102 @@
+<modification>	
+	<id>Facebook Pixel Conversions + Event Tracking - 34723</id>
+	<version>1.0</version>
+	<version>2.X - 3.X</version>
+	<author>opencarttools@gmail.com</author>
+	<file name="catalog/controller/common/footer.php">
+		<operation error="skip">
+			<search position="after"><![CDATA[function index]]></search>
+			<add position="after"><![CDATA[$this->load->model('extension/fbecommevnt');
+			if($this->model_extension_fbecommevnt->getmodstatus()) { 
+				$this->document->addScript('catalog/view/javascript/fbecommevnt.js');
+ 			}]]></add>
+		</operation>
+	</file>
+	<file name="catalog/controller/common/header.php">
+		<operation error="skip">
+			<search position="after"><![CDATA[function index]]></search>
+			<add position="after"><![CDATA[$this->load->model('extension/fbecommevnt');
+			$data['fbecommevnt_trackcode'] = $this->model_extension_fbecommevnt->gettrackcode();]]></add>
+		</operation>
+	</file>
+	<file name="catalog/view/theme/*/template/common/header.tpl">
+		<operation error="skip">
+			<search position="before"><![CDATA[</head>]]></search>
+			<add position="before"><![CDATA[<?php echo $fbecommevnt_trackcode;?>]]></add>
+		</operation>
+	</file>
+	<file name="catalog/controller/information/contact.php">
+		<operation error="skip">
+            <search position="after"><![CDATA[$data['footer'] =]]></search>
+            <add position="after"><![CDATA[$this->load->model('extension/fbecommevnt');
+			$data['fbecommevnt_contactus'] = $this->model_extension_fbecommevnt->contactus();
+			if(!empty($data['fbecommevnt_contactus'])) {
+			$data['footer'] = $data['fbecommevnt_contactus'] . $data['footer'];
+			}]]></add>
+        </operation> 
+    </file>
+	<file name="catalog/controller/account/login.php">
+		<operation error="skip">
+            <search position="after"><![CDATA[$data['footer'] =]]></search>
+            <add position="after"><![CDATA[$this->load->model('extension/fbecommevnt');
+			$data['fbecommevnt_loginevent'] = $this->model_extension_fbecommevnt->loginevent();
+			if(!empty($data['fbecommevnt_loginevent'])) {
+			$data['footer'] = $data['fbecommevnt_loginevent'] . $data['footer'];
+			}]]></add>
+        </operation> 
+    </file>
+	<file name="catalog/controller/account/success.php">
+		<operation error="skip">
+            <search position="after"><![CDATA[$data['footer'] =]]></search>
+            <add position="after"><![CDATA[$this->load->model('extension/fbecommevnt');
+			$data['fbecommevnt_registerevent'] = $this->model_extension_fbecommevnt->registerevent();
+			if(!empty($data['fbecommevnt_registerevent'])) {
+			$data['footer'] = $data['fbecommevnt_registerevent'] . $data['footer'];
+			}]]></add>
+        </operation> 
+    </file>
+	<file name="catalog/controller/product/product.php">
+		<operation error="skip">
+            <search position="after"><![CDATA[$data['footer'] =]]></search>
+            <add position="after"><![CDATA[$this->load->model('extension/fbecommevnt');
+			$data['fbecommevnt_viewprod'] = $this->model_extension_fbecommevnt->viewprod(isset($this->request->get['product_id']) ? $this->request->get['product_id'] : 0);
+			if(!empty($data['fbecommevnt_viewprod'])) {
+			$data['footer'] = $data['fbecommevnt_viewprod'] . $data['footer'];
+			}]]></add>
+        </operation> 
+    </file>
+	<file name="catalog/controller/product/search.php">
+		<operation error="skip">
+            <search position="after"><![CDATA[$data['footer'] =]]></search>
+            <add position="after"><![CDATA[$this->load->model('extension/fbecommevnt');
+			$data['fbecommevnt_searchproduct'] = $this->model_extension_fbecommevnt->searchproduct();
+			if(!empty($data['fbecommevnt_searchproduct'])) {
+			$data['footer'] = $data['fbecommevnt_searchproduct'] . $data['footer'];
+			}]]></add>
+        </operation> 
+    </file>
+	<file name="catalog/controller/checkout/checkout.php">
+		<operation error="skip">
+            <search position="after"><![CDATA[$data['footer'] =]]></search>
+            <add position="after"><![CDATA[$this->load->model('extension/fbecommevnt');
+			$data['fbecommevnt_begincheckout'] = $this->model_extension_fbecommevnt->begincheckout();
+			$data['fbecommevnt_checkoutfunnel'] = $this->model_extension_fbecommevnt->checkoutfunnel();
+			if(!empty($data['fbecommevnt_begincheckout'])) {
+			$data['footer'] = $data['fbecommevnt_begincheckout'] . $data['fbecommevnt_checkoutfunnel'] . $data['footer'];
+			}]]></add>
+        </operation> 
+    </file>
+	<file name="catalog/controller/checkout/success.php">
+        <operation error="skip">
+            <search position="after"><![CDATA[isset($this->session->data['order_id'])]]></search>
+            <add position="after"><![CDATA[$this->load->model('extension/fbecommevnt');
+			$data['fbecommevnt_chksuccess'] = $this->model_extension_fbecommevnt->getchksuccess($this->session->data['order_id']);]]></add>
+        </operation>
+		<operation error="skip">
+            <search position="after"><![CDATA[$data['footer'] =]]></search>
+            <add position="after"><![CDATA[if(!empty($data['fbecommevnt_chksuccess'])) {
+			$data['footer'] = $data['fbecommevnt_chksuccess'] . $data['footer'];
+			}]]></add>
+        </operation> 
+    </file>
+</modification>

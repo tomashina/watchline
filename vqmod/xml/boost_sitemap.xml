@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+	<id>Boost Sitemap</id>
+	<version>2.0.0</version>
+	<vqmver>2.6.1</vqmver>
+	<author>opencartboost</author>
+	<email>support@opencartboost.com</email>
+	<website>http://www.opencartboost.com</website>
+	
+	<file path="catalog/controller/" name="common/seo_url.php,startup/seo_url.php">
+	    <operation>
+            <search position="before" offset="1"><![CDATA[$this->request->get['route'] = 'error/not_found';]]></search>
+            <add><![CDATA[
+			} elseif ($part == 'sitemap-index.xml') {
+				if (version_compare(VERSION, '2.2.0.0', '<')) {
+					$this->request->get['route'] = 'feed/boost_sitemap';
+				} else {
+					$this->request->get['route'] = 'extension/feed/boost_sitemap';
+				}
+
+				break;
+            ]]></add>
+        </operation>
+    </file>
+	
+</modification>

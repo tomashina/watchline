@@ -1,0 +1,1059 @@
+.moment{
+text-align:center;
+position: absolute;
+background: #ffffff;
+border: 1px solid #000;
+padding: 3px;
+border-radius: 2px;
+line-height: 1.2;
+}
+#tab-image{
+     -webkit-touch-callout: none; 
+    -webkit-user-select: none; 
+     -khtml-user-select: none; 
+       -moz-user-select: none; 
+        -ms-user-select: none; 
+            user-select: none; 
+}
+
+#drop-files {
+margin: 0px auto 40px auto;
+background: rgba(0,0,0,0.1);
+border-radius: 3px;
+border: 4px dashed rgba(0,0,0,0.2);
+text-align: center;
+padding: 10px;
+position: relative;
+}
+
+
+#drop-files p{font-size: 3em;
+font-weight: bold;}
+
+#drop-files p + i{font-size: 1.5em;}
+
+#file-input {
+  visibility: hidden;
+  position: absolute;
+  width: 0px;
+}
+
+#drop-files #frm #bySer {
+  background: none;
+}
+
+#drop-files #frm button {
+  padding: 0;
+  height: 60px;
+  outline: none !important;
+  margin: 0;
+
+}
+
+#drop-files #frm label {
+  margin: 0;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  width: 85px;
+  height: 60px;
+}
+
+#drop-files #byPc {
+  border-bottom: 3px solid #de5bc2;
+}
+
+#drop-files #bySer {
+  border-top: none;
+  border-bottom: 3px solid #b7ca80;
+  border-right: 1px solid #000;
+  border-left: 1px solid #000;
+}
+
+#drop-files #byUrl {
+  border-bottom: 3px solid #5bc0de;
+}
+
+#drop-files label i {
+  font-size: 24px;
+  margin-top: 8px;
+}
+#drop-files.dropHover{
+border-color: rgba(222, 91, 91, 0.65);
+}
+#drop-files #frm > label:hover,
+#drop-files #frm > button:hover,
+.image .aExist button:hover,
+.image .alRem button:hover,
+.image .fa:hover {
+  background: #797979;
+  color: #fff!important;
+}
+#drop-files #url-input{
+      position: relative;
+    width: 100%;
+    height: 30px;
+    text-align: center;
+        margin-top: 8px;
+}
+#drop-files #url-input span{display: none;
+  height: 100%;  width: 100%;}
+#drop-files #url-input input{
+       height: 100%;
+    width: 100%;
+}
+#drop-files #url-input button{
+    height: 100%;
+    width: 35px;
+    border-radius: 0;
+    margin-left: -35px;
+    position: relative;
+    vertical-align: top;
+}
+
+#list-view > div:nth-child(1):not(.ui-sortable-helper):after{
+    content: "Main";
+    display: block;
+    position: absolute;
+    background: #fff;
+    padding: 1px 6px;
+    box-shadow: 0px 1px 5px 2px rgba(150, 150, 150, 0.53);    top: 0;
+}
+
+#images  {  
+    margin-bottom: 72px;
+        min-height: 250px;
+}
+#list-view  {
+text-align: center;
+}
+
+#file-input{
+    visibility: hidden; 
+    position:absolute; 
+    width: 0px;}
+
+.image {
+    border-top: 1px solid #cfcfcf;
+    padding: 0px!important;
+    margin: 3px 5px;
+    position: relative;
+    height: 200px;
+    width: 300px;overflow: hidden;
+    display: inline-block;
+    box-shadow: 0px 1px 4px 2px rgba(150, 150, 150, 0.56);
+    border-radius: 2px;
+        background: #fff;
+        z-index: 0;
+        -webkit-transition: transform 450ms cubic-bezier(0.120, 0.180, 0.075, 1); /* older webkit */
+-webkit-transition: transform 450ms cubic-bezier(0.120, 0.180, 0.075, 1.465); 
+   -moz-transition: transform 450ms cubic-bezier(0.120, 0.180, 0.075, 1.465); 
+     -o-transition: transform 450ms cubic-bezier(0.120, 0.180, 0.075, 1.465); 
+        transition: transform 450ms cubic-bezier(0.120, 0.180, 0.075, 1.465); /* custom */
+-webkit-transition-timing-function: cubic-bezier(0.120, 0.180, 0.075, 1); /* older webkit */
+-webkit-transition-timing-function: cubic-bezier(0.120, 0.180, 0.075, 1.465); 
+   -moz-transition-timing-function: cubic-bezier(0.120, 0.180, 0.075, 1.465); 
+     -o-transition-timing-function: cubic-bezier(0.120, 0.180, 0.075, 1.465); 
+        transition-timing-function: cubic-bezier(0.120, 0.180, 0.075, 1.465); /* custom */
+
+}
+div.image.ui-sortable-helper{
+    z-index: 3;
+}
+div.image:active{
+    cursor: move;
+}
+div.mouseScale,div.tapScale{
+-webkit-transition:none;
+   -moz-transition:none;
+     -o-transition:none;
+        transition:none; 
+}
+div.mouseScale{
+    -webkit-transform: scale(1.08);
+    -moz-transform: scale(1.08);
+    -o-transform: scale(1.08);
+    transform: scale(1.08);
+}
+div.tapScale{
+    -webkit-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -o-transform: scale(1.02);
+    transform: scale(1.02);
+}
+
+
+.btm_img {
+      display: block;
+    position: absolute;
+    z-index: 1;
+    background: rgba(251, 237, 237, 0.75);
+    top: 0;
+    right: 0;
+}
+
+
+
+.image .fa {
+     cursor: pointer;
+    line-height: 18px;
+    padding: 1px 8px;
+    font-size: 14px;
+    color: #666666;
+}
+
+.image .fa.fa-search-plus {
+border-bottom: 2px solid #b7ca80;
+}
+
+.image .fa.fa-times {
+border-bottom: 2px solid #ea75b1;
+border-left: 1px solid #666666;
+}
+
+
+
+.image  img,.image  canvas{  
+ -webkit-user-drag: none;
+    max-width: 100%;
+    max-height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    left: 0;
+    right: 0;
+    border-radius: 2px;
+    z-index: -2;
+}
+
+.image > img:nth-child(1){ z-index: -1;}
+
+.image .previewImg{
+    position: relative;
+    height: 100%;
+    display: inherit;
+    width: 100%;
+}
+/*loading*/
+.lis{
+    background: rgba(0, 0, 0, 0.52);
+    position: absolute;
+    z-index: 9999;
+    display: none;
+    bottom: -30px;
+    top: 0;
+    right: 0;
+    left: 0;
+}
+.lis div{
+    width: 135px;
+    height: 135px;
+    position: relative;
+    top: 50%;
+    top: 50vh;
+    margin: -53px auto;
+}
+.lis i{    color: #fff;
+    position: absolute;
+    top: 47%;
+    left: 22%;
+}
+.lis span{
+       display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #5bc0de;
+    -webkit-animation: spin1 2s linear infinite;
+    -o-animation: spin1 2s linear infinite;
+    -moz-animation: spin1 2s linear infinite;
+    animation: spin1 2s linear infinite;
+}
+.lis span:before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #de5bc2;
+    -webkit-animation: spin1 3s linear infinite;
+    -o-animation: spin1 3s linear infinite;
+    -moz-animation: spin1 3s linear infinite;
+    animation: spin1 3s linear infinite;
+}
+
+.lis span:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #b7ca80;
+    -webkit-animation: spin1 1.5s linear infinite;
+    -o-animation: spin1 1.5s linear infinite;
+    -moz-animation: spin1 1.5s linear infinite;
+    animation: spin1 1.5s linear infinite;
+}
+@-webkit-keyframes spin1 {
+  0% {
+    -webkit-transform: rotate(0deg);
+   -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+
+
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+
+.loading{width: 100px;
+    height: 100px;
+    margin: 45px auto;}
+
+.loading span{top: 88px;
+    position: absolute;
+    margin: 0px -37px;
+    width: 75px;}
+
+.loading > div,
+.loading > div:after {
+  border-radius: 50%;
+  width: 10em;
+  height: 10em;
+}
+.loading > div {
+    font-size: 10px;
+    position: relative;
+    text-indent: -9999em;
+        border: 1.1em solid #d6d6d6;
+    border-left: 1.1em solid #666666;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-animation: load8 1.1s infinite linear;
+    -ms-animation: load8 1.1s infinite linear;
+    -o-animation: load8 1.1s infinite linear;
+    animation: load8 1.1s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+   
+
+/*img exist and remove all*/
+.image .alRem{
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    right: 0;
+    background: #fff;
+}
+.image .alRem button{
+height: 22px;
+}
+.image .aExist{ 
+    position: absolute;
+    width: 100%;
+    background: rgba(210, 103, 142, 0.71);
+    right: 0px;
+    bottom: 0px;
+    font-size: 14px;
+    color: #000000;
+    padding-left: 2px;
+    text-align: left;
+    overflow: hidden;
+    z-index: 2;
+    display: none;
+}
+.image .aExist .e_text{ 
+margin-bottom: 1px;
+    padding: 1px 1px;
+    font-size: 17px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.61), 0 0 1em rgba(0, 0, 0, 0.57);
+    color: #fff;
+}
+.image .aExist .e_bottom{ 
+bottom: 0;
+    position: absolute;
+    margin-bottom: 2px;
+}
+
+.image .aExist button,.image .alRem button{
+    background-color: rgba(243, 243, 243, 0.78);
+    padding: 0 3px;
+    border-radius: 0;
+    border: none;
+  outline: none !important;
+}
+
+.image .aExist button:nth-child(1),.image .alRem button:nth-child(1) {  
+    border-bottom: 2px solid #5bc0de;}
+.image .aExist button:nth-child(2),.image .alRem button:nth-child(2) {
+    border-bottom: 2px solid #de5bc2;
+    border-left: 1px solid #666666;}
+.image .aExist button:nth-child(3) {
+    border-bottom: 2px solid #b7ca80;
+    border-left: 1px solid #666666;}
+
+
+.image .aExist>img{ 
+    position: relative;
+    float: right;
+    max-width: 127px;
+    height: 50px;
+    z-index: 1;
+}
+.image .aExist img{ 
+     -webkit-transition: .1s;
+   -moz-transition: .1s;
+     -o-transition: .1s;
+        transition: .1s;
+}
+.image .aExist img:hover{height: 80px;}
+.shkMe{
+  -webkit-animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  -moz-animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  -o-animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-2px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-2px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(2px, 0, 0);
+  }
+}
+
+/*multi upl btn file manager*/
+#button-up{position: relative;margin-left: 2px;}
+#button-up span{
+        position: absolute;
+    right: -10px;
+    top: -10px;
+    background: rgb(218, 100, 126);
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+    line-height: 18px;
+    text-align: center;
+}
+
+.ssIm_modal a.thumbnail + label input{
+display: none;
+}
+
+
+a.thumbnail.seBor:after {
+    content: "\f058";
+    position: absolute;
+    top: -13px;
+    right: 7px;
+    border-radius: 50%;
+    color: #80d684;
+    font: normal normal normal 20px/1 FontAwesome;
+}
+/*resp*/
+@media(max-width:380px) {
+.panel-body {
+    padding-left: 0;  
+    padding-right:0;
+}
+.container-fluid {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+.image {
+    margin: 3px;}
+}
+
+@media(max-width:320px) {
+
+.container-fluid {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+}
+
+/*-----------------Watermark--------------------------*/
+.wmBkfix{
+  width: 100%;
+  height: 100%;
+  background:#000;
+  position: fixed;
+  -webkit-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+.wmBkfix.opc4{
+  opacity: .4;
+}
+.ssWaterMark{
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1001;
+}
+
+/* line 52, ../sass/style.scss */
+.waterMarkBlock {
+  font-size: 16px;
+  text-align: left;
+  box-sizing: content-box;
+}
+
+/*------------------------------input type text and textarea and other starts-----*/
+/* line 56, ../sass/style.scss */
+.waterMarkBlock .wm_form-group {
+  position: relative;
+  margin-top: 36px;
+  margin-bottom: 36px;
+}
+/* line 60, ../sass/style.scss */
+.waterMarkBlock .wm_form-group input[type=text] {
+  height: 30px;
+  display: block;
+  background: none;
+  padding: 2px 2px 1px;
+  font-size: 16px;
+  border-width: 0;
+  border-color: transparent;
+  line-height: 1.9;
+  width: 100%;
+  color: #333;
+  -webkit-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+  box-shadow: none;
+}
+/* line 74, ../sass/style.scss */
+.waterMarkBlock .wm_form-group input[type=text]:placeholder-shown ~ .input-label {
+  top: 4px;
+  font-size: 16px;
+}
+/* line 78, ../sass/style.scss */
+.waterMarkBlock .wm_form-group input[type=text]:focus ~ .input-label {
+  top: -16px;
+  font-size: 12px;
+}
+/* line 83, ../sass/style.scss */
+.waterMarkBlock .wm_form-group select {
+  width: 100%;
+  font-size: 16px;
+  height: 25.6px;
+  padding: 2px 2px 1px;
+  background: none;
+  border: none;
+  line-height: 1.6;
+  box-shadow: none;
+  outline: none;
+  overflow: hidden;
+  text-indent: 0.01px;
+  text-overflow: '';
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+}
+/* line 101, ../sass/style.scss */
+.waterMarkBlock .wm_form-group select::-ms-expand {
+  display: none;
+}
+/* line 105, ../sass/style.scss */
+.waterMarkBlock .wm_form-group .input-label {
+  margin: 0;
+  position: absolute;
+  top: -16px;
+  pointer-events: none;
+  padding-left: 2px;
+  z-index: 1;
+  color: #b3b3b3;
+  font-size: 12px;
+  font-weight: normal;
+  -webkit-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+}
+/* line 117, ../sass/style.scss */
+.waterMarkBlock .wm_form-group .input-label + .bar {
+  position: relative;
+  border-bottom: 1px solid #999;
+  display: block;
+}
+/* line 121, ../sass/style.scss */
+.waterMarkBlock .wm_form-group .input-label + .bar::before {
+  content: '';
+  height: 2px;
+  width: 0;
+  left: 50%;
+  bottom: -1px;
+  position: absolute;
+  background: #B73394;
+  -webkit-transition: left 0.28s ease, width 0.28s ease;
+  transition: left 0.28s ease, width 0.28s ease;
+  z-index: 2;
+}
+/* line 136, ../sass/style.scss */
+.waterMarkBlock .wm_form-group select:focus,
+.waterMarkBlock .wm_form-group input[type=text]:focus {
+  outline: none;
+}
+/* line 139, ../sass/style.scss */
+.waterMarkBlock .wm_form-group select:focus ~ .input-label,
+.waterMarkBlock .wm_form-group input[type=text]:focus ~ .input-label {
+  color: #B73394;
+}
+/* line 142, ../sass/style.scss */
+.waterMarkBlock .wm_form-group select:focus ~ .bar::before,
+.waterMarkBlock .wm_form-group input[type=text]:focus ~ .bar::before {
+  width: 100%;
+  left: 0;
+}
+
+/*----------------------------input range starts-------------------------------*/
+/* line 152, ../sass/style.scss */
+.waterMarkBlock .wm_form-range {
+  position: relative;
+  margin-top: 56px;
+  margin-bottom: 56px;
+}
+/* line 156, ../sass/style.scss */
+.waterMarkBlock .wm_form-range .input-label {
+  position: absolute;
+  top: -30px;
+  left: 0;
+  pointer-events: none;
+  padding-left: 2px;
+  z-index: 1;
+  color: grey;
+  font-size: 12px;
+  font-weight: normal;
+  -webkit-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+}
+/* line 170, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range] {
+  -webkit-appearance: none;
+  width: 99%;
+}
+/* line 173, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range]::-webkit-slider-runnable-track {
+  height: 2px;
+  background: #ababab;
+  border: none;
+  border-radius: 3px;
+}
+/* line 179, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range]::-ms-track {
+  height: 2px;
+  background: transparent;
+  border-color: transparent;
+  border-width: 9px 0;
+  color: transparent;
+}
+/* line 186, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range]::-ms-fill-lower, .waterMarkBlock .wm_form-range input[type=range]::-ms-fill-upper {
+  background: #ababab;
+  border-radius: 3px;
+}
+/* line 192, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range]::-moz-range-track {
+  height: 2px;
+  background: #ababab;
+  border: none;
+  border-radius: 3px;
+}
+/* line 198, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: white;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  box-shadow: 1px 1px 1px 0px #7b7878;
+  border: 1px solid #dadada;
+  margin-top: -9px;
+}
+/* line 208, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range]::-ms-thumb {
+  background: white;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  box-shadow: 1px 1px 1px 0px #7b7878;
+  border: 1px solid #dadada;
+  margin-top: -4px;
+}
+/* line 217, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range]::-moz-range-thumb {
+  background: white;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  box-shadow: 1px 1px 1px 0px #7b7878;
+  border: 1px solid #dadada;
+  margin-top: -4px;
+}
+/* line 226, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range]:focus {
+  outline: none;
+}
+/* line 228, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range]:focus ~ .input-label {
+  color: #B73394;
+}
+/* line 231, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #B73394;
+  -webkit-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+}
+/* line 236, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range]:focus::-ms-fill-lower {
+  background: #B73394;
+  -ms-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+}
+/* line 241, ../sass/style.scss */
+.waterMarkBlock .wm_form-range input[type=range]:focus::-moz-range-track {
+  background: #B73394;
+  -moz-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  /* line 253, ../sass/style.scss */
+  .waterMarkBlock .wm_form-range {
+    margin-top: -9px;
+    margin-bottom: 0px;
+  }
+
+  /* line 257, ../sass/style.scss */
+  .waterMarkBlock .wm_form-range .input-label {
+    top: -3.2px;
+  }
+}
+@-moz-document url-prefix() {
+  /* line 263, ../sass/style.scss */
+  .waterMarkBlock .wm_form-range input[type=range] {
+    margin-left: 0px;
+  }
+
+  /* line 266, ../sass/style.scss */
+  .waterMarkBlock .wm_form-range .input-label {
+    top: -19.2px;
+  }
+}
+/*----------------------------input range Ends---------------------------------*/
+/* line 273, ../sass/style.scss */
+.waterMarkBlock {
+  border-top: 1px solid #cfcfcf;
+  border-radius: 50%;
+  height: 0;
+  width: 0;
+  padding: 0;
+  box-shadow: 0px 2px 3px 1px rgba(158, 158, 158, 0.56);
+  background: #fff;
+  overflow: hidden;
+  position: relative;
+-webkit-transition: 0.2s ease-out;
+-o-transition: 0.2s ease-out;
+transition: 0.2s ease-out;
+  margin: 10px;
+}
+
+/* line 286, ../sass/style.scss */
+.ssWaterMark.wmAct .waterMarkBlock {
+  height: 525px;
+  width: 265px;
+  border-radius: 3px;
+  padding: 7px;
+}
+
+/* line 293, ../sass/style.scss */
+.waterMarkBlock canvas {
+  border-radius: 2px;
+}
+
+/* line 296, ../sass/style.scss */
+.waterMarkBlock .colorBl {
+  z-index: 1;
+  position: absolute;
+  top: 10px;
+  height: 0px;
+  width: 0px;
+  left: 0px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  opacity: 0;
+  -webkit-transition: all 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
+  transition: all 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+/* line 311, ../sass/style.scss */
+.waterMarkBlock .setCol.active .colorBl {
+  top: -70px;
+  left: -102px;
+  opacity: 1;
+}
+
+/* line 316, ../sass/style.scss */
+.waterMarkBlock .colorList, .waterMarkBlock .setCol.active .colorBl {
+  height: 60px;
+  width: 120px;
+}
+
+/* line 321, ../sass/style.scss */
+.waterMarkBlock .color {
+  height: 20px;
+  width: 20px;
+  display: inline-block;
+  background: #000;
+  position: absolute;
+  right: 2px;
+  top: 6px;
+  border-radius: 2px;
+  box-shadow: 1px 1px 1px #a2a2a2;
+  cursor: pointer;
+}
+
+
+/* line 333, ../sass/style.scss */
+.waterMarkBlock .colorBl .color {
+  top: 0;
+  left: 0;
+  position: relative;
+  margin: 5px;
+}
+
+/* line 339, ../sass/style.scss */
+.waterMarkBlock .colorBl .color.anyCol {
+  margin-top: 0;
+  float: left;
+}
+
+/* line 343, ../sass/style.scss */
+.waterMarkBlock .colorBl input[type=text] {
+  border: 1px solid #c7c7c7;
+  height: 20px;
+  width: 85px;
+  padding: 0;
+  margin-left: 5px;
+  border-radius: 2px;
+  color: #9c9c9c;
+  font-size: 19px;
+  padding-left: 3px;
+}
+
+/* line 355, ../sass/style.scss */
+.ssWaterMark .btWm {
+  position: absolute;
+  right: 5px;
+  cursor: pointer;
+  top: 5px;
+  border-radius: 50%;
+  box-shadow: 0px 1.5px 3px 0.5px rgba(0, 0, 0, 0.35);
+  color: #9e9696;
+  height: 33px;
+  width: 33px;
+  font-size: 12px;
+  line-height: 2.9;
+  text-align: center;
+  z-index: 1;
+  background: #fff;
+  -webkit-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition:  0.3s;
+  overflow: hidden;
+}
+@media only screen and (max-width:600px) {
+  .ssWaterMark .btWm {
+    right: 2px;
+    top: 2px;
+    height: 25px;
+    width: 25px;
+    font-size: 11px;
+    line-height: 2.4;
+
+}
+}
+.ssWaterMark.wmAct .btWm{
+
+    color: #000;
+    height: 17px;
+    width: 17px;
+    line-height: 1.5;
+}
+.ssWaterMark.wmAct .btWm.wmSave{
+      color: #666666;
+     height: 33px;
+     width: 33px;
+    line-height: 2.8;
+    background: rgba(76, 224, 198, 0.65);
+    font-weight: bold;
+}
+   .ssWaterMark.wmAct .btWm.wmSave:hover{
+    box-shadow: 0px 0px 4px 2px rgba(95, 129, 138, 0.45);
+        color: #797979;
+      }
+
+/* line 371, ../sass/style.scss */
+.ssWaterMark .btWm:hover {
+  box-shadow: 0px 0px 4px 2px rgba(66, 156, 197, 0.67);
+  color: grey;
+}
+
+/* line 376, ../sass/style.scss */
+.waterMarkBlock .tgl {
+  display: none;
+}
+/* line 379, ../sass/style.scss */
+.waterMarkBlock .tgl, .waterMarkBlock .tgl:after, .waterMarkBlock .tgl:before, .waterMarkBlock .tgl *, .waterMarkBlock .tgl *:after, .waterMarkBlock .tgl *:before, .waterMarkBlock .tgl + .tgl-btn {
+  box-sizing: border-box;
+}
+/* line 387, ../sass/style.scss */
+.waterMarkBlock .tgl::selection, .waterMarkBlock .tgl:after::selection, .waterMarkBlock .tgl:before::selection, .waterMarkBlock .tgl *::selection, .waterMarkBlock .tgl *:after::selection, .waterMarkBlock .tgl *:before::selection, .waterMarkBlock .tgl + .tgl-btn::selection {
+  background: none;
+}
+/* line 391, ../sass/style.scss */
+.waterMarkBlock .tgl + .tgl-inf {
+  display: inline-block;
+  line-height: 2;
+  vertical-align: top;
+  padding: 0px 20px 0px 15px;
+  font-size: 16px;
+}
+/* line 398, ../sass/style.scss */
+.waterMarkBlock .tgl ~ .tgl-btn {
+  outline: 0;
+  display: inline-block;
+  width: 110px;
+  height: 32px;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+/* line 406, ../sass/style.scss */
+.waterMarkBlock .tgl ~ .tgl-btn:after, .waterMarkBlock .tgl ~ .tgl-btn:before {
+  position: relative;
+  display: block;
+  content: "";
+  width: 50%;
+  height: 100%;
+}
+/* line 414, ../sass/style.scss */
+.waterMarkBlock .tgl ~ .tgl-btn:after {
+  left: 0;
+}
+/* line 417, ../sass/style.scss */
+.waterMarkBlock .tgl ~ .tgl-btn:before {
+  display: none;
+}
+/* line 421, ../sass/style.scss */
+.waterMarkBlock .tgl:checked ~ .tgl-btn:after {
+  left: 50%;
+}
+
+/* line 428, ../sass/style.scss */
+.waterMarkBlock .tgl-offOn ~ .tgl-btn {
+  overflow: hidden;
+  backface-visibility: hidden;
+  transition: all .2s ease;
+  font-family: sans-serif;
+}
+/* line 433, ../sass/style.scss */
+.waterMarkBlock .tgl-offOn ~ .tgl-btn:after, .waterMarkBlock .tgl-offOn ~ .tgl-btn:before {
+  display: inline-block;
+  transition: all .2s ease;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  line-height: 2;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+  height: 100%;
+}
+/* line 446, ../sass/style.scss */
+.waterMarkBlock .tgl-offOn ~ .tgl-btn:after {
+  left: 100%;
+  color: #666666;
+  content: attr(data-tg-on);
+  border-bottom: 3px solid #80bf19;
+  border-left: 1px solid #666666;
+  background: #fff;
+}
+/* line 454, ../sass/style.scss */
+.waterMarkBlock .tgl-offOn ~ .tgl-btn:before {
+  left: 0;
+  content: attr(data-tg-off);
+  border-bottom: 3px solid #e02145;
+  background: #464646;
+}
+/* line 464, ../sass/style.scss */
+.waterMarkBlock .tgl-offOn:checked ~ .tgl-btn:before {
+  left: -100%;
+}
+/* line 467, ../sass/style.scss */
+.waterMarkBlock .tgl-offOn:checked ~ .tgl-btn:after {
+  left: 0;
+}
+

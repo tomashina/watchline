@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<name>COMPANYSHIPPING</name>
+    <code>default</code>
+	<id>COMPANY - SHIPPING - MODULE</id>
+	<version>1.0</version>
+	<vqmver>2.0</vqmver>
+	<author>info@jmnet.dk</author>
+	
+	<file path="admin/view/template/sale/order_info.tpl">
+		<operation>
+			<search><![CDATA[<li class="active"><a href="#tab-history" data-toggle="tab"><?php echo $tab_history; ?></a></li>]]></search>
+			<add position="after" error="skip"><![CDATA[<li><a href="#tab-company-shipping" data-toggle="tab">GLS Labels</a></li>]]></add>
+		</operation>
+		
+		
+		
+		<operation>
+			<search><![CDATA[<div class="tab-pane active" id="tab-history">]]></search>
+			<add  position="before"><![CDATA[<div id="tab-company-shipping" class="tab-pane">
+        <table class="form">
+        	<tr>
+        	<td>
+				<label>Broj paketa: </label>
+			</td>
+			<td>
+               	<input id="pcount" class="form-control" name="pcount" value="1" type="text" />
+			</td>
+	       </tr>
+
+	       <tr>
+		       	<td>
+					<label>Broj narudžbe </label>
+				</td>
+				<td>
+	               	<input id="brojracuna" class="form-control" name="brojracuna" value="" type="text" />
+				</td>
+	       </tr>
+
+	       <tr>
+		       	<td>
+					<label>Iznos otkupnine <br>(Ako nije isti. Npr 35.95): </label>
+				</td>
+				<td>
+	               	<input id="iznos" class="form-control" name="iznos" value="" type="text" />
+	             </td>			
+	       </tr>
+          <tr>
+            <td><a id="btn_cpnshipping" class="btn btn-info">Šalji na GLS</a></td>
+          </tr>
+        </table>
+        <div id="response"></div>
+      </div>]]></add>
+		</operation>
+		
+		<operation>
+			<search><![CDATA[<?php echo $footer; ?>]]></search>
+			<add  position="before"><![CDATA[<script type="text/javascript">
+  $('#btn_cpnshipping').click(function(){
+  	var pcount = $('#pcount').val();
+	var iznos = $('#iznos').val();
+	var brojracuna = $('#brojracuna').val();
+      $.ajax({
+            url: "index.php?route=extension/module/cpnshipping/import&token=<?php echo $token; ?>&order_id=<?php echo $order_id; ?>&pcount=" + pcount + "&iznos=" + iznos + "&brojracuna=" + brojracuna,
+            type: 'post',
+            success: function(json) {
+                console.log(json);
+                var div = document.getElementById('response');
+                div.innerHTML = div.innerHTML + 'Etiketa poslana uspješno';
+            },
+            error: function(err) {
+                var div = document.getElementById('response');
+                div.innerHTML = div.innerHTML + 'Greška u slanju etikete';
+            }
+        });
+    });
+            
+</script>]]></add>
+		</operation>
+	</file>
+
+</modification>

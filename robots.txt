@@ -1,0 +1,14 @@
+User-agent: *
+Disallow: /*&limit
+Disallow: /*?sort
+Disallow: /*?tf_fc
+Disallow: /*&sort
+Disallow: /*?route=checkout/
+Disallow: /*?route=account/
+
+
+
+
+
+
+Sitemap: https://www.watchline.hr/sitemap-index.xml

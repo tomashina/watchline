@@ -1,0 +1,19 @@
+# Apache example for OpenCart 2.3. Keep the production .htaccess untracked.
+Options -Indexes
+
+<FilesMatch "(?i)^(config\.php|LocalValetDriver\.php|test\.php|gath\.php|webstanje\.csv)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "(?i)\.(ini|log|sql|tpl|twig|yaml|yml)$">
+    Require all denied
+</FilesMatch>
+
+RewriteEngine On
+RewriteBase /
+RewriteRule ^(?:system|vqmod)/ - [F,L,NC]
+RewriteRule ^sitemap\.xml$ index.php?route=extension/feed/google_sitemap [L,QSA]
+RewriteRule ^googlebase\.xml$ index.php?route=extension/feed/google_base [L,QSA]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^?]*) index.php?_route_=$1 [L,QSA]
