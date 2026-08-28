@@ -1,0 +1,77 @@
+<?php
+$_['heading_title']                = 'BOX NOW Croatia';
+
+$_['text_extension']              = 'Extensions';
+$_['text_success']                = 'Success: BOX NOW shipping settings have been saved!';
+$_['text_edit']                   = 'Edit BOX NOW shipping';
+$_['text_api']                    = 'BOX NOW API and widget';
+$_['text_sender']                 = 'Sender and shipment';
+$_['text_pricing']                = 'Pricing and availability';
+$_['text_enabled']                = 'Enabled';
+$_['text_disabled']               = 'Disabled';
+$_['text_yes']                    = 'Yes';
+$_['text_no']                     = 'No';
+$_['text_all_zones']              = 'All zones';
+$_['text_none']                   = ' --- None --- ';
+$_['text_shipment_created']       = 'The BOX NOW shipment has been created.';
+$_['text_shipment_exists']        = 'The BOX NOW shipment already exists.';
+$_['text_secret_saved']           = 'A client secret is already saved. Leave this field empty to keep it.';
+
+$_['entry_api_url']               = 'API URL';
+$_['entry_widget_url']            = 'Map widget URL';
+$_['entry_tracking_url']          = 'Tracking URL';
+$_['entry_partner_id']            = 'API Partner ID';
+$_['entry_widget_partner_id']     = 'Widget Partner ID';
+$_['entry_origin_location_id']    = 'Origin / warehouse location ID';
+$_['entry_client_id']             = 'Client ID';
+$_['entry_client_secret']         = 'Client secret';
+$_['entry_origin_name']           = 'Sender contact name';
+$_['entry_origin_email']          = 'Sender email';
+$_['entry_origin_phone']          = 'Sender phone';
+$_['entry_order_prefix']          = 'Order number prefix';
+$_['entry_compartment_size']      = 'Compartment size';
+$_['entry_allow_return']          = 'Allow return';
+$_['entry_cost']                  = 'Shipping cost';
+$_['entry_free_total']            = 'Free shipping from';
+$_['entry_tax_class']             = 'Tax class';
+$_['entry_geo_zone']              = 'Geo zone';
+$_['entry_status']                = 'Status';
+$_['entry_sort_order']            = 'Sort order';
+
+$_['help_api_url']                = 'The production URL is https://api-production.boxnow.hr. Enter the BOX NOW stage URL for testing.';
+$_['help_widget_url']             = 'Official v5 widget: https://widget-cdn.boxnow.hr/map-widget/client/v5.js';
+$_['help_tracking_url']           = 'Use {parcel} where the BOX NOW parcel number should be inserted.';
+$_['help_partner_id']             = 'The numeric Partner ID assigned by BOX NOW for the Partner API (X-PartnerID header).';
+$_['help_widget_partner_id']      = 'The Partner ID for the BOX NOW map widget. Keep it separate because it may differ from the API Partner ID.';
+$_['help_origin_location_id']     = 'The warehouse or origin location ID returned by the BOX NOW /origins endpoint.';
+$_['help_order_prefix']           = 'The prefix must make orderNumber unique in BOX NOW. Use up to 64 letters, digits, dots, underscores or hyphens.';
+$_['help_compartment_size']       = '0 = automatic, 1 = small, 2 = medium, 3 = large.';
+$_['help_free_total']             = 'Leave empty or enter 0 to always charge the configured shipping cost.';
+
+$_['button_create_shipment']      = 'Create BOX NOW shipment';
+$_['button_label']                = 'BOX NOW PDF label';
+$_['button_tracking']             = 'Track shipment';
+
+$_['error_permission']            = 'Warning: you do not have permission to modify BOX NOW shipping!';
+$_['error_validation']            = 'Check the highlighted BOX NOW fields.';
+$_['error_required']              = 'This field is required when the module is enabled.';
+$_['error_api_url']               = 'Enter a valid HTTPS API URL.';
+$_['error_widget_url']            = 'Enter a valid HTTPS map widget URL.';
+$_['error_tracking_url']          = 'Enter a valid HTTPS tracking URL.';
+$_['error_partner_id']            = 'Partner ID may contain digits only.';
+$_['error_email']                 = 'Enter a valid email address.';
+$_['error_order_prefix']          = 'Use 1 to 64 letters, digits, dots, underscores or hyphens.';
+$_['error_cost']                  = 'Cost must be a number greater than or equal to 0.';
+$_['error_free_total']            = 'Free shipping total must be a number greater than or equal to 0.';
+$_['error_compartment_size']      = 'Compartment size must be 0, 1, 2 or 3.';
+$_['error_credentials']           = 'BOX NOW Client ID or Client secret is missing.';
+$_['error_not_boxnow_order']      = 'The order does not contain BOX NOW shipping and a selected locker.';
+$_['error_missing_parcel']        = 'Create the BOX NOW shipment first.';
+$_['error_missing_parcel_id']     = 'BOX NOW did not return a parcel ID.';
+$_['error_invalid_label']         = 'BOX NOW did not return a valid PDF label.';
+$_['error_access_token']          = 'BOX NOW API did not return an access token.';
+$_['error_curl']                  = 'BOX NOW API: PHP cURL is unavailable.';
+$_['error_json_encode']           = 'BOX NOW API: the shipment payload could not be prepared.';
+$_['error_invalid_json']          = 'BOX NOW API returned invalid JSON.';
+$_['error_processing']            = 'BOX NOW is already processing this order. Please try again.';
+$_['error_invalid_request']       = 'Invalid BOX NOW request.';

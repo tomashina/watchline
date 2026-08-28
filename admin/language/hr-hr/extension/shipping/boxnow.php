@@ -1,0 +1,77 @@
+<?php
+$_['heading_title']                = 'BOX NOW Hrvatska';
+
+$_['text_extension']              = 'Ekstenzije';
+$_['text_success']                = 'Uspjeh: postavke BOX NOW dostave su spremljene!';
+$_['text_edit']                   = 'Uredi BOX NOW dostavu';
+$_['text_api']                    = 'BOX NOW API i widget';
+$_['text_sender']                 = 'Pošiljatelj i pošiljka';
+$_['text_pricing']                = 'Cijena i dostupnost';
+$_['text_enabled']                = 'Omogućeno';
+$_['text_disabled']               = 'Onemogućeno';
+$_['text_yes']                    = 'Da';
+$_['text_no']                     = 'Ne';
+$_['text_all_zones']              = 'Sve zone';
+$_['text_none']                   = ' --- Bez --- ';
+$_['text_shipment_created']       = 'BOX NOW pošiljka je kreirana.';
+$_['text_shipment_exists']        = 'BOX NOW pošiljka već postoji.';
+$_['text_secret_saved']           = 'Client secret je već spremljen. Ostavite polje prazno kako biste zadržali postojeću vrijednost.';
+
+$_['entry_api_url']               = 'API URL';
+$_['entry_widget_url']            = 'URL map widgeta';
+$_['entry_tracking_url']          = 'URL za praćenje';
+$_['entry_partner_id']            = 'API Partner ID';
+$_['entry_widget_partner_id']     = 'Widget Partner ID';
+$_['entry_origin_location_id']    = 'ID ishodišne lokacije / skladišta';
+$_['entry_client_id']             = 'Client ID';
+$_['entry_client_secret']         = 'Client secret';
+$_['entry_origin_name']           = 'Naziv kontakta pošiljatelja';
+$_['entry_origin_email']          = 'E-mail pošiljatelja';
+$_['entry_origin_phone']          = 'Telefon pošiljatelja';
+$_['entry_order_prefix']          = 'Prefiks broja narudžbe';
+$_['entry_compartment_size']      = 'Veličina pretinca';
+$_['entry_allow_return']          = 'Dopusti povrat';
+$_['entry_cost']                  = 'Cijena dostave';
+$_['entry_free_total']            = 'Besplatna dostava od';
+$_['entry_tax_class']             = 'Porezna klasa';
+$_['entry_geo_zone']              = 'Geo zona';
+$_['entry_status']                = 'Status';
+$_['entry_sort_order']            = 'Redoslijed';
+
+$_['help_api_url']                = 'Produkcijski URL je https://api-production.boxnow.hr. Za testiranje unesite BOX NOW stage URL.';
+$_['help_widget_url']             = 'Službeni v5 widget: https://widget-cdn.boxnow.hr/map-widget/client/v5.js';
+$_['help_tracking_url']           = 'Koristite {parcel} na mjestu BOX NOW broja paketa.';
+$_['help_partner_id']             = 'Broj Partner ID-a koji BOX NOW dodjeljuje za Partner API (X-PartnerID zaglavlje).';
+$_['help_widget_partner_id']      = 'Partner ID za BOX NOW map widget. Upišite ga odvojeno jer se može razlikovati od API Partner ID-a.';
+$_['help_origin_location_id']     = 'ID skladišta ili druge ishodišne lokacije iz BOX NOW /origins odgovora.';
+$_['help_order_prefix']           = 'Prefiks mora osigurati jedinstven orderNumber u BOX NOW sustavu. Koristite do 64 slova, znamenke, točke, donje crte ili crtice.';
+$_['help_compartment_size']       = '0 = automatski, 1 = mali, 2 = srednji, 3 = veliki.';
+$_['help_free_total']             = 'Ostavite prazno ili unesite 0 ako se dostava uvijek naplaćuje.';
+
+$_['button_create_shipment']      = 'Kreiraj BOX NOW pošiljku';
+$_['button_label']                = 'BOX NOW PDF labela';
+$_['button_tracking']             = 'Prati pošiljku';
+
+$_['error_permission']            = 'Upozorenje: nemate dopuštenje za izmjenu BOX NOW dostave!';
+$_['error_validation']            = 'Provjerite označena BOX NOW polja.';
+$_['error_required']              = 'Ovo polje je obavezno kada je modul omogućen.';
+$_['error_api_url']               = 'Unesite valjan HTTPS API URL.';
+$_['error_widget_url']            = 'Unesite valjan HTTPS URL map widgeta.';
+$_['error_tracking_url']          = 'Unesite valjan HTTPS URL za praćenje.';
+$_['error_partner_id']            = 'Partner ID mora sadržavati samo znamenke.';
+$_['error_email']                 = 'Unesite valjanu e-mail adresu.';
+$_['error_order_prefix']          = 'Koristite od 1 do 64 slova, znamenke, točke, donje crte ili crtice.';
+$_['error_cost']                  = 'Cijena mora biti broj jednak ili veći od 0.';
+$_['error_free_total']            = 'Iznos besplatne dostave mora biti broj jednak ili veći od 0.';
+$_['error_compartment_size']      = 'Veličina pretinca mora biti 0, 1, 2 ili 3.';
+$_['error_credentials']           = 'Nedostaju BOX NOW Client ID ili Client secret.';
+$_['error_not_boxnow_order']      = 'Narudžba nema odabranu BOX NOW dostavu i paketomat.';
+$_['error_missing_parcel']        = 'Prvo kreirajte BOX NOW pošiljku.';
+$_['error_missing_parcel_id']     = 'BOX NOW nije vratio broj paketa.';
+$_['error_invalid_label']         = 'BOX NOW nije vratio valjanu PDF labelu.';
+$_['error_access_token']          = 'BOX NOW API nije vratio pristupni token.';
+$_['error_curl']                  = 'BOX NOW API: PHP cURL nije dostupan.';
+$_['error_json_encode']           = 'BOX NOW API: podatke pošiljke nije moguće pripremiti.';
+$_['error_invalid_json']          = 'BOX NOW API je vratio neispravan JSON odgovor.';
+$_['error_processing']            = 'BOX NOW obrada ove narudžbe već je u tijeku. Pokušajte ponovno.';
+$_['error_invalid_request']       = 'Neispravan BOX NOW zahtjev.';

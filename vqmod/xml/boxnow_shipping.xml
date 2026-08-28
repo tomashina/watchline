@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<id>BOX NOW Croatia Shipping for Watchline</id>
+	<version>1.0.0</version>
+	<vqmver>2.6.0</vqmver>
+	<author>AG media</author>
+
+	<file name="catalog/controller/checkout/success.php">
+		<operation error="log">
+			<search position="after"><![CDATA[unset($this->session->data['comment']);]]></search>
+			<add><![CDATA[
+			unset($this->session->data['boxnow_locker']);
+]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/controller/checkout/confirm.php">
+		<operation error="log">
+			<search position="before"><![CDATA[// Validate minimum quantity requirements.]]></search>
+			<add><![CDATA[
+		if (isset($this->session->data['shipping_method']['code']) && $this->session->data['shipping_method']['code'] == 'boxnow.boxnow') {
+			if (empty($this->session->data['boxnow_locker']['id'])) {
+				$redirect = $this->url->link('checkout/checkout', '', true);
+			}
+		} else {
+			unset($this->session->data['boxnow_locker']);
+		}
+
+]]></add>
+		</operation>
+		<operation error="log">
+			<search position="before"><![CDATA[$order_data['products'] = array();]]></search>
+			<add><![CDATA[
+			$order_data['boxnow_locker'] = array();
+
+			if (isset($this->session->data['shipping_method']['code']) && $this->session->data['shipping_method']['code'] == 'boxnow.boxnow' && !empty($this->session->data['boxnow_locker']['id'])) {
+				$order_data['boxnow_locker'] = $this->session->data['boxnow_locker'];
+			}
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/controller/quickcheckout/confirm.php">
+		<operation error="log">
+			<search position="before"><![CDATA[// Validate minimum quantity requirements.]]></search>
+			<add><![CDATA[
+		if (isset($this->session->data['shipping_method']['code']) && $this->session->data['shipping_method']['code'] == 'boxnow.boxnow') {
+			if (empty($this->session->data['boxnow_locker']['id'])) {
+				$redirect = $this->url->link('checkout/checkout', '', true);
+			}
+		} else {
+			unset($this->session->data['boxnow_locker']);
+		}
+
+]]></add>
+		</operation>
+		<operation error="log">
+			<search position="before"><![CDATA[$order_data['products'] = array();]]></search>
+			<add><![CDATA[
+			$order_data['boxnow_locker'] = array();
+
+			if (isset($this->session->data['shipping_method']['code']) && $this->session->data['shipping_method']['code'] == 'boxnow.boxnow' && !empty($this->session->data['boxnow_locker']['id'])) {
+				$order_data['boxnow_locker'] = $this->session->data['boxnow_locker'];
+			}
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/model/checkout/order.php">
+		<operation error="log">
+			<search position="after"><![CDATA[$order_id = $this->db->getLastId();]]></search>
+			<add><![CDATA[
+
+		if (!empty($data['boxnow_locker']['id'])) {
+			$this->load->model('extension/shipping/boxnow');
+			$this->model_extension_shipping_boxnow->saveOrderLocker($order_id, $data['boxnow_locker']);
+		}
+]]></add>
+		</operation>
+		<operation error="log">
+			<search position="after"><![CDATA[$data['shipping_method'] = $order_info['shipping_method'];]]></search>
+			<add><![CDATA[
+
+				if (isset($order_info['shipping_code']) && $order_info['shipping_code'] == 'boxnow.boxnow') {
+					$boxnow_query = $this->db->query("SELECT `locker_id`, `locker_label` FROM `" . DB_PREFIX . "boxnow_order` WHERE `order_id` = '" . (int)$order_id . "' LIMIT 1");
+
+					if ($boxnow_query->num_rows) {
+						$boxnow_label = $boxnow_query->row['locker_label'] ? $boxnow_query->row['locker_label'] : $boxnow_query->row['locker_id'];
+						$data['shipping_method'] .= '<br /><strong>BOX NOW:</strong> ' . htmlspecialchars($boxnow_label, ENT_QUOTES, 'UTF-8') . ' (#' . htmlspecialchars($boxnow_query->row['locker_id'], ENT_QUOTES, 'UTF-8') . ')';
+					}
+				}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/controller/account/order.php">
+		<operation error="log">
+			<search position="after"><![CDATA[$data['shipping_method'] = $order_info['shipping_method'];]]></search>
+			<add><![CDATA[
+
+			if (isset($order_info['shipping_code']) && $order_info['shipping_code'] == 'boxnow.boxnow') {
+				$boxnow_query = $this->db->query("SELECT `locker_id`, `locker_label` FROM `" . DB_PREFIX . "boxnow_order` WHERE `order_id` = '" . (int)$this->request->get['order_id'] . "' LIMIT 1");
+
+				if ($boxnow_query->num_rows) {
+					$boxnow_label = $boxnow_query->row['locker_label'] ? $boxnow_query->row['locker_label'] : $boxnow_query->row['locker_id'];
+					$data['shipping_method'] .= '<br /><small><strong>BOX NOW:</strong> ' . htmlspecialchars($boxnow_label, ENT_QUOTES, 'UTF-8') . ' (#' . htmlspecialchars($boxnow_query->row['locker_id'], ENT_QUOTES, 'UTF-8') . ')</small>';
+				}
+			}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/controller/checkout/shipping_method.php">
+		<operation error="log">
+			<search position="before"><![CDATA[$this->response->setOutput($this->load->view('checkout/shipping_method', $data));]]></search>
+			<add><![CDATA[
+		$this->load->language('extension/shipping/boxnow');
+
+		$data['boxnow_available'] = false;
+
+		foreach ($data['shipping_methods'] as $boxnow_shipping_method) {
+			if (!empty($boxnow_shipping_method['quote'])) {
+				foreach ($boxnow_shipping_method['quote'] as $boxnow_quote) {
+					if (isset($boxnow_quote['code']) && $boxnow_quote['code'] == 'boxnow.boxnow') {
+						$data['boxnow_available'] = true;
+						break 2;
+					}
+				}
+			}
+		}
+
+		if ($data['code'] != 'boxnow.boxnow') {
+			unset($this->session->data['boxnow_locker']);
+		}
+
+		$data['boxnow_locker'] = isset($this->session->data['boxnow_locker']) && is_array($this->session->data['boxnow_locker']) ? $this->session->data['boxnow_locker'] : array('id' => '', 'label' => '', 'postcode' => '');
+		$data['boxnow_partner_id'] = (string)$this->config->get('boxnow_widget_partner_id');
+		$data['boxnow_widget_url'] = $this->config->get('boxnow_widget_url') ? (string)$this->config->get('boxnow_widget_url') : 'https://widget-cdn.boxnow.hr/map-widget/client/v5.js';
+		$data['boxnow_select_text'] = $this->language->get('text_select_locker');
+		$data['boxnow_placeholder'] = $this->language->get('text_selected_placeholder');
+		$data['boxnow_error'] = $this->language->get('error_locker');
+		$data['boxnow_save_error'] = $this->language->get('error_save_locker');
+		$data['boxnow_widget_error'] = $this->language->get('error_widget');
+
+]]></add>
+		</operation>
+		<operation error="log">
+			<search position="before"><![CDATA[if (!$json) {]]></search>
+			<add><![CDATA[
+		if (isset($this->request->post['shipping_method']) && $this->request->post['shipping_method'] == 'boxnow.boxnow') {
+			$this->load->language('extension/shipping/boxnow');
+
+			$boxnow_locker_id = isset($this->request->post['boxnow_locker_id']) ? preg_replace('/[^A-Za-z0-9_-]/', '', trim($this->request->post['boxnow_locker_id'])) : (isset($this->session->data['boxnow_locker']['id']) ? $this->session->data['boxnow_locker']['id'] : '');
+			$boxnow_locker_label = isset($this->request->post['boxnow_locker_label']) ? utf8_substr(trim(strip_tags($this->request->post['boxnow_locker_label'])), 0, 255) : (isset($this->session->data['boxnow_locker']['label']) ? $this->session->data['boxnow_locker']['label'] : '');
+			$boxnow_locker_postcode = isset($this->request->post['boxnow_locker_postcode']) ? utf8_substr(preg_replace('/[^0-9A-Za-z -]/', '', trim($this->request->post['boxnow_locker_postcode'])), 0, 32) : (isset($this->session->data['boxnow_locker']['postcode']) ? $this->session->data['boxnow_locker']['postcode'] : '');
+
+			if ($boxnow_locker_id == '') {
+				$json['error']['warning'] = $this->language->get('error_locker');
+			} else {
+				$this->session->data['boxnow_locker'] = array(
+					'id'       => utf8_substr($boxnow_locker_id, 0, 64),
+					'label'    => $boxnow_locker_label,
+					'postcode' => $boxnow_locker_postcode
+				);
+			}
+		} elseif (isset($this->request->post['shipping_method'])) {
+			unset($this->session->data['boxnow_locker']);
+		}
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/controller/quickcheckout/shipping_method.php">
+		<operation error="log">
+			<search position="before"><![CDATA[// All variables]]></search>
+			<add><![CDATA[
+		$this->load->language('extension/shipping/boxnow');
+
+		$data['boxnow_available'] = false;
+
+		foreach ($data['shipping_methods'] as $boxnow_shipping_method) {
+			if (!empty($boxnow_shipping_method['quote'])) {
+				foreach ($boxnow_shipping_method['quote'] as $boxnow_quote) {
+					if (isset($boxnow_quote['code']) && $boxnow_quote['code'] == 'boxnow.boxnow') {
+						$data['boxnow_available'] = true;
+						break 2;
+					}
+				}
+			}
+		}
+
+		if ($data['code'] != 'boxnow.boxnow') {
+			unset($this->session->data['boxnow_locker']);
+		}
+
+		$data['boxnow_locker'] = isset($this->session->data['boxnow_locker']) && is_array($this->session->data['boxnow_locker']) ? $this->session->data['boxnow_locker'] : array('id' => '', 'label' => '', 'postcode' => '');
+		$data['boxnow_partner_id'] = (string)$this->config->get('boxnow_widget_partner_id');
+		$data['boxnow_widget_url'] = $this->config->get('boxnow_widget_url') ? (string)$this->config->get('boxnow_widget_url') : 'https://widget-cdn.boxnow.hr/map-widget/client/v5.js';
+		$data['boxnow_select_text'] = $this->language->get('text_select_locker');
+		$data['boxnow_placeholder'] = $this->language->get('text_selected_placeholder');
+		$data['boxnow_error'] = $this->language->get('error_locker');
+		$data['boxnow_save_error'] = $this->language->get('error_save_locker');
+		$data['boxnow_widget_error'] = $this->language->get('error_widget');
+
+]]></add>
+		</operation>
+		<operation error="log">
+			<search position="before"><![CDATA[if (isset($this->request->post['shipping_method']) && isset($this->session->data['shipping_methods'])) {]]></search>
+			<add><![CDATA[
+		if (isset($this->request->post['shipping_method']) && $this->request->post['shipping_method'] == 'boxnow.boxnow') {
+			$boxnow_locker_id = isset($this->request->post['boxnow_locker_id']) ? preg_replace('/[^A-Za-z0-9_-]/', '', trim($this->request->post['boxnow_locker_id'])) : '';
+
+			if ($boxnow_locker_id != '') {
+				$this->session->data['boxnow_locker'] = array(
+					'id'       => utf8_substr($boxnow_locker_id, 0, 64),
+					'label'    => isset($this->request->post['boxnow_locker_label']) ? utf8_substr(trim(strip_tags($this->request->post['boxnow_locker_label'])), 0, 255) : '',
+					'postcode' => isset($this->request->post['boxnow_locker_postcode']) ? utf8_substr(preg_replace('/[^0-9A-Za-z -]/', '', trim($this->request->post['boxnow_locker_postcode'])), 0, 32) : ''
+				);
+			} elseif (isset($this->request->post['boxnow_locker_id'])) {
+				unset($this->session->data['boxnow_locker']);
+			}
+		} elseif (isset($this->request->post['shipping_method'])) {
+			unset($this->session->data['boxnow_locker']);
+		}
+
+]]></add>
+		</operation>
+		<operation error="log">
+			<search position="before"><![CDATA[if ($this->config->get('quickcheckout_delivery_required')) {]]></search>
+			<add><![CDATA[
+		if (isset($this->request->post['shipping_method']) && $this->request->post['shipping_method'] == 'boxnow.boxnow') {
+			$this->load->language('extension/shipping/boxnow');
+
+			$boxnow_locker_id = isset($this->request->post['boxnow_locker_id']) ? preg_replace('/[^A-Za-z0-9_-]/', '', trim($this->request->post['boxnow_locker_id'])) : (isset($this->session->data['boxnow_locker']['id']) ? $this->session->data['boxnow_locker']['id'] : '');
+
+			if ($boxnow_locker_id == '') {
+				$json['error']['warning'] = $this->language->get('error_locker');
+			} else {
+				$this->session->data['boxnow_locker'] = array(
+					'id'       => utf8_substr($boxnow_locker_id, 0, 64),
+					'label'    => isset($this->request->post['boxnow_locker_label']) ? utf8_substr(trim(strip_tags($this->request->post['boxnow_locker_label'])), 0, 255) : (isset($this->session->data['boxnow_locker']['label']) ? $this->session->data['boxnow_locker']['label'] : ''),
+					'postcode' => isset($this->request->post['boxnow_locker_postcode']) ? utf8_substr(preg_replace('/[^0-9A-Za-z -]/', '', trim($this->request->post['boxnow_locker_postcode'])), 0, 32) : (isset($this->session->data['boxnow_locker']['postcode']) ? $this->session->data['boxnow_locker']['postcode'] : '')
+				);
+			}
+		}
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/view/theme/default/template/checkout/checkout.tpl">
+		<operation error="log">
+			<search position="replace"><![CDATA[data: $('#collapse-shipping-method input[type=\'radio\']:checked, #collapse-shipping-method textarea'),]]></search>
+			<add><![CDATA[data: $('#collapse-shipping-method input[type=\'radio\']:checked, #collapse-shipping-method input[type=\'hidden\'], #collapse-shipping-method input[type=\'text\'], #collapse-shipping-method textarea'),]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/view/theme/basel/template/checkout/checkout.tpl">
+		<operation error="log">
+			<search position="replace"><![CDATA[data: $('#collapse-shipping-method input[type=\'radio\']:checked, #collapse-shipping-method textarea'),]]></search>
+			<add><![CDATA[data: $('#collapse-shipping-method input[type=\'radio\']:checked, #collapse-shipping-method input[type=\'hidden\'], #collapse-shipping-method input[type=\'text\'], #collapse-shipping-method textarea'),]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/view/theme/basel/template/quickcheckout/checkout.tpl">
+		<operation error="log">
+			<search position="replace"><![CDATA[data: $('#shipping-method select, #shipping-method input[type=\'radio\']:checked, #shipping-method textarea, #shipping-method input[type=\'text\']'),]]></search>
+			<add><![CDATA[data: $('#shipping-method select, #shipping-method input[type=\'radio\']:checked, #shipping-method input[type=\'hidden\'], #shipping-method textarea, #shipping-method input[type=\'text\']'),]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/view/theme/default/template/checkout/shipping_method.tpl">
+		<operation error="log">
+			<search position="after"><![CDATA[<?php echo $quote['title']; ?> - <?php echo $quote['text']; ?></label>]]></search>
+			<add><![CDATA[
+	<?php if ($quote['code'] == 'boxnow.boxnow') { ?>
+	<div id="boxnow-locker-fields" style="margin:10px 0 0 20px;<?php echo ($code != 'boxnow.boxnow') ? 'display:none;' : ''; ?>">
+	  <button type="button" class="boxnow-map-widget-button btn btn-primary" style="margin-bottom:10px;"><?php echo $boxnow_select_text; ?></button>
+	  <div class="boxnow-map"></div>
+	  <input type="text" name="boxnow_locker_label" value="<?php echo htmlspecialchars($boxnow_locker['label'], ENT_QUOTES, 'UTF-8'); ?>" class="form-control" readonly="readonly" placeholder="<?php echo htmlspecialchars($boxnow_placeholder, ENT_QUOTES, 'UTF-8'); ?>" />
+	  <input type="hidden" name="boxnow_locker_id" value="<?php echo htmlspecialchars($boxnow_locker['id'], ENT_QUOTES, 'UTF-8'); ?>" />
+	  <input type="hidden" name="boxnow_locker_postcode" value="<?php echo htmlspecialchars($boxnow_locker['postcode'], ENT_QUOTES, 'UTF-8'); ?>" />
+	  <div class="boxnow-locker-error" style="margin-top:5px;color:#a94442;<?php echo $boxnow_locker['id'] ? 'display:none;' : ''; ?>"><?php echo $boxnow_error; ?></div>
+	</div>
+	<?php } ?>
+]]></add>
+		</operation>
+		<operation error="log">
+			<search position="before"><![CDATA[<div class="buttons">]]></search>
+			<add><![CDATA[
+<?php if ($boxnow_available) { ?>
+<script type="text/javascript" src="catalog/view/javascript/boxnow.js?v=1.0.7"></script>
+<script type="text/javascript"><!--
+window.WatchlineBoxNow.init({
+	root: '#boxnow-locker-fields',
+	partnerId: <?php echo json_encode((string)$boxnow_partner_id, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
+	widgetUrl: <?php echo json_encode((string)$boxnow_widget_url, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
+	saveUrl: 'index.php?route=extension/shipping/boxnow/saveLocker',
+	requiredError: <?php echo json_encode($boxnow_error, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
+	saveError: <?php echo json_encode($boxnow_save_error, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
+	widgetError: <?php echo json_encode($boxnow_widget_error, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>
+});
+//--></script>
+<?php } ?>
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/view/theme/basel/template/quickcheckout/shipping_method.tpl">
+		<operation error="log">
+			<search position="after"><![CDATA[<?php echo $quote['title']; ?></label>]]></search>
+			<add><![CDATA[
+	  <?php if ($quote['code'] == 'boxnow.boxnow') { ?>
+	  <div id="boxnow-locker-fields" style="margin-top:10px;<?php echo ($code != 'boxnow.boxnow') ? 'display:none;' : ''; ?>">
+		<button type="button" class="boxnow-map-widget-button btn btn-primary" style="margin-bottom:10px;"><?php echo $boxnow_select_text; ?></button>
+		<div class="boxnow-map"></div>
+		<input type="text" name="boxnow_locker_label" value="<?php echo htmlspecialchars($boxnow_locker['label'], ENT_QUOTES, 'UTF-8'); ?>" class="form-control" readonly="readonly" placeholder="<?php echo htmlspecialchars($boxnow_placeholder, ENT_QUOTES, 'UTF-8'); ?>" />
+		<input type="hidden" name="boxnow_locker_id" value="<?php echo htmlspecialchars($boxnow_locker['id'], ENT_QUOTES, 'UTF-8'); ?>" />
+		<input type="hidden" name="boxnow_locker_postcode" value="<?php echo htmlspecialchars($boxnow_locker['postcode'], ENT_QUOTES, 'UTF-8'); ?>" />
+		<div class="boxnow-locker-error" style="margin-top:5px;color:#a94442;<?php echo $boxnow_locker['id'] ? 'display:none;' : ''; ?>"><?php echo $boxnow_error; ?></div>
+	  </div>
+	  <?php } ?>
+]]></add>
+		</operation>
+		<operation error="log">
+			<search position="after"><![CDATA[</select><br />]]></search>
+			<add><![CDATA[
+	<?php if ($boxnow_available) { ?>
+	<div id="boxnow-locker-fields" style="margin-top:10px;<?php echo ($code != 'boxnow.boxnow') ? 'display:none;' : ''; ?>">
+	  <button type="button" class="boxnow-map-widget-button btn btn-primary" style="margin-bottom:10px;"><?php echo $boxnow_select_text; ?></button>
+	  <div class="boxnow-map"></div>
+	  <input type="text" name="boxnow_locker_label" value="<?php echo htmlspecialchars($boxnow_locker['label'], ENT_QUOTES, 'UTF-8'); ?>" class="form-control" readonly="readonly" placeholder="<?php echo htmlspecialchars($boxnow_placeholder, ENT_QUOTES, 'UTF-8'); ?>" />
+	  <input type="hidden" name="boxnow_locker_id" value="<?php echo htmlspecialchars($boxnow_locker['id'], ENT_QUOTES, 'UTF-8'); ?>" />
+	  <input type="hidden" name="boxnow_locker_postcode" value="<?php echo htmlspecialchars($boxnow_locker['postcode'], ENT_QUOTES, 'UTF-8'); ?>" />
+	  <div class="boxnow-locker-error" style="margin-top:5px;color:#a94442;<?php echo $boxnow_locker['id'] ? 'display:none;' : ''; ?>"><?php echo $boxnow_error; ?></div>
+	</div>
+	<?php } ?>
+]]></add>
+		</operation>
+		<operation error="log">
+			<search position="before"><![CDATA[<script type="text/javascript"><!--]]></search>
+			<add><![CDATA[
+<?php if ($boxnow_available) { ?>
+<script type="text/javascript" src="catalog/view/javascript/boxnow.js?v=1.0.7"></script>
+<script type="text/javascript"><!--
+window.WatchlineBoxNow.init({
+	root: '#boxnow-locker-fields',
+	partnerId: <?php echo json_encode((string)$boxnow_partner_id, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
+	widgetUrl: <?php echo json_encode((string)$boxnow_widget_url, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
+	saveUrl: 'index.php?route=extension/shipping/boxnow/saveLocker',
+	requiredError: <?php echo json_encode($boxnow_error, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
+	saveError: <?php echo json_encode($boxnow_save_error, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
+	widgetError: <?php echo json_encode($boxnow_widget_error, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>
+});
+//--></script>
+<?php } ?>
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="admin/controller/sale/order.php">
+		<operation error="log">
+			<search position="after" index="2"><![CDATA[$data['shipping_method'] = $order_info['shipping_method'];]]></search>
+			<add><![CDATA[
+			$data['boxnow_create'] = '';
+			$data['boxnow_label'] = '';
+			$data['boxnow_parcel_id'] = '';
+			$data['boxnow_tracking_url'] = '';
+
+			if (isset($order_info['shipping_code']) && $order_info['shipping_code'] == 'boxnow.boxnow') {
+				$this->load->language('extension/shipping/boxnow');
+				$this->load->model('extension/shipping/boxnow');
+
+				$boxnow_order = $this->model_extension_shipping_boxnow->getOrder((int)$this->request->get['order_id']);
+
+				if ($boxnow_order) {
+					$data['boxnow_create'] = $this->url->link('extension/shipping/boxnow/createShipment', 'token=' . $this->session->data['token'] . '&order_id=' . (int)$this->request->get['order_id'], true);
+					$data['boxnow_label'] = $this->url->link('extension/shipping/boxnow/label', 'token=' . $this->session->data['token'] . '&order_id=' . (int)$this->request->get['order_id'], true);
+					$data['boxnow_parcel_id'] = $boxnow_order['parcel_id'];
+					$data['boxnow_tracking_url'] = $this->model_extension_shipping_boxnow->getTrackingUrl($boxnow_order['parcel_id']);
+					$boxnow_display = $boxnow_order['locker_label'] ? $boxnow_order['locker_label'] : $boxnow_order['locker_id'];
+
+					$data['shipping_method'] .= '<br /><small><strong>BOX NOW:</strong> ' . htmlspecialchars($boxnow_display, ENT_QUOTES, 'UTF-8') . ' (#' . htmlspecialchars($boxnow_order['locker_id'], ENT_QUOTES, 'UTF-8') . ')</small>';
+					$data['shipping_method'] .= '<div style="margin-top:8px;">';
+
+					if ($data['boxnow_parcel_id']) {
+						$data['shipping_method'] .= '<span class="label label-success">Parcel: ' . htmlspecialchars($data['boxnow_parcel_id'], ENT_QUOTES, 'UTF-8') . '</span> ';
+
+						if ($data['boxnow_tracking_url']) {
+							$data['shipping_method'] .= '<a href="' . htmlspecialchars($data['boxnow_tracking_url'], ENT_QUOTES, 'UTF-8') . '" target="_blank" rel="noopener" class="btn btn-default btn-xs"><i class="fa fa-map-marker"></i> ' . $this->language->get('button_tracking') . '</a> ';
+						}
+
+						$data['shipping_method'] .= '<a href="' . $data['boxnow_label'] . '" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print"></i> ' . $this->language->get('button_label') . '</a>';
+					} else {
+						$data['shipping_method'] .= '<button type="button" id="button-boxnow-create" data-loading-text="' . htmlspecialchars($this->language->get('text_loading'), ENT_QUOTES, 'UTF-8') . '" class="btn btn-success btn-xs"><i class="fa fa-truck"></i> ' . $this->language->get('button_create_shipment') . '</button>';
+					}
+
+					$data['shipping_method'] .= '</div>';
+				}
+			}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="admin/view/template/sale/order_info.tpl">
+		<operation error="log">
+			<search position="before"><![CDATA[<?php echo $footer; ?>]]></search>
+			<add><![CDATA[
+<?php if (!empty($boxnow_create) && empty($boxnow_parcel_id)) { ?>
+<script type="text/javascript"><!--
+$(document).delegate('#button-boxnow-create', 'click', function() {
+	var element = this;
+
+	$.ajax({
+		url: <?php echo json_encode(str_replace('&amp;', '&', $boxnow_create), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
+		type: 'post',
+		dataType: 'json',
+		beforeSend: function() {
+			$(element).button('loading');
+		},
+		complete: function() {
+			$(element).button('reset');
+		},
+		success: function(json) {
+			$('.boxnow-alert').remove();
+
+			if (json.error) {
+				var error = $('<div class="alert alert-danger boxnow-alert"><i class="fa fa-exclamation-circle"></i> <span></span><button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+				error.find('span').text(json.error);
+				$('#content > .container-fluid').prepend(error);
+			}
+
+			if (json.success) {
+				location.reload();
+			}
+		},
+		error: function(xhr, ajaxOptions, thrownError) {
+			alert(thrownError + "\r\n" + xhr.statusText);
+		}
+	});
+});
+//--></script>
+<?php } ?>
+
+]]></add>
+		</operation>
+	</file>
+</modification>
