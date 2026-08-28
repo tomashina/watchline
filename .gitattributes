@@ -1,13 +1,3 @@
-* text=auto
-
-*.php text eol=lf
-*.js text eol=lf
-*.css text eol=lf
-*.html text eol=lf
-*.htm text eol=lf
-*.json text eol=lf
-*.md text eol=lf
-*.txt text eol=lf
-*.xml text eol=lf
-*.yml text eol=lf
-*.yaml text eol=lf
+# This legacy snapshot contains mixed CR, CRLF and LF endings. Preserve file
+# bytes so normal checkouts do not create false modifications on production.
+* -text
