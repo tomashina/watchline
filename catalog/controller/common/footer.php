@@ -28,6 +28,7 @@ class ControllerCommonFooter extends Controller {
 
 		$route = isset($this->request->get['route']) ? $this->request->get['route'] : 'common/home';
 		$data['ruta'] = $this->url->link($route, '', 'SSL');
+		$data['show_legal_guarantee_bar'] = ($route !== 'common/home');
 
 		$this->load->model('catalog/information');
 

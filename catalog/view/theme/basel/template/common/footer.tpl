@@ -4,6 +4,7 @@
 <div class="container">
 <?php echo $position_bottom; ?>
 </div>
+<?php if ($show_legal_guarantee_bar) { ?>
 <div class="legal-guarantee-bar">
   <div class="container">
     <a class="legal-guarantee-trigger" href="<?php echo $legal_guarantee_url; ?>" data-toggle="modal" data-target="#legal-guarantee-modal" aria-controls="legal-guarantee-modal" aria-haspopup="dialog">
@@ -13,6 +14,7 @@
     </a>
   </div>
 </div>
+<?php } ?>
 <div id="footer">
 <div class="container">
 <?php if ($footer_block_1 && $footer_block_1 != '<p><br></p>') { ?>

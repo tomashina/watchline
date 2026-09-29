@@ -14,6 +14,10 @@ class ControllerCommonHome extends Controller {
 		$data['content_top'] = $this->load->controller('common/content_top');
 		$data['content_bottom'] = $this->load->controller('common/content_bottom');
 
+		$this->load->language('common/footer');
+		$data['text_legal_guarantee'] = $this->language->get('text_legal_guarantee');
+		$data['legal_guarantee_url'] = 'https://europa.eu/youreurope/jamstva_hr';
+
 		// Remove only the old intentionally hidden page-builder H1. Visible
 		// editorial headings are preserved, while the template owns the main H1.
 		$hidden_h1 = '/<h1\b(?=[^>]*visibility\s*:\s*hidden)(?=[^>]*font-size\s*:\s*0(?:px)?)[^>]*>.*?<\/h1>/is';
