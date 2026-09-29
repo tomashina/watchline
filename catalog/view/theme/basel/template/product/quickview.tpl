@@ -49,6 +49,9 @@
         <?php } ?>
       </ul>
         
+        <?php if (!empty($anchor_price_text)) { ?>
+        <div class="anchor-price anchor-price-detail"><?php echo htmlspecialchars($anchor_price_text, ENT_QUOTES, 'UTF-8'); ?></div>
+        <?php } ?>
         <?php if ($discounts) { ?>
         <p class="discount">
         <?php foreach ($discounts as $discount) { ?>

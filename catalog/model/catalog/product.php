@@ -259,26 +259,12 @@ class ModelCatalogProduct extends Model {
 	}
 
 
-	  public function getProductLowestPrice($product_id) {
-       // $sub_month = \Illuminate\Support\Carbon::now()->subMonth()->format('Y-m-d');
-
-       $now = date_create();
-		$sub_month = date_sub($now,date_interval_create_from_date_string("30 days"));
-
-		$sub_month = date_format($sub_month,"Y-m-d");
-
-
-        $query = $this->db->query("SELECT ps.price FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = " . $product_id . " AND ((ps.date_start = '0000-00-00' OR ps.date_start < " . $sub_month . ") AND (ps.date_end = '0000-00-00' OR ps.date_end > " . $sub_month . ")) ORDER BY ps.price DESC LIMIT 1;");
-
-        if ($query->num_rows) {
-            //\Agmedia\Helpers\Log::store($product_id . ' - ' . $query->row['price'], 'specials');
-            return $query->row['price'];
-        }
-
-        //\Agmedia\Helpers\Log::store($product_id . ' - 0', 'specials');
-
-        return 0;
-    }
+	public function getProductLowestPrice($product_id) {
+		// Kept for compatibility with legacy controllers. The old query did not
+		// represent a lawful 30-day price and failed in strict SQL modes.
+		// Public price history now comes only from the audited anchor module.
+		return 0;
+	}
 
 
 	public function getLatestProducts($limit) {

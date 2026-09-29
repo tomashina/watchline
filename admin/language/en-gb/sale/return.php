@@ -1,17 +1,18 @@
 <?php
 // Heading
-$_['heading_title']       = 'Product Returns';
+$_['heading_title']       = 'Unilateral Contract Termination';
 
 // Text
-$_['text_success']        = 'Success: You have modified returns!';
-$_['text_list']           = 'Product Return List';
-$_['text_add']            = 'Add Product Return';
-$_['text_edit']           = 'Edit Product Return';
+$_['text_success']        = 'Success: You have modified unilateral contract termination requests!';
+$_['text_list']           = 'Unilateral Contract Termination Request List';
+$_['text_add']            = 'Add Unilateral Contract Termination Request';
+$_['text_edit']           = 'Edit Unilateral Contract Termination Request';
 $_['text_opened']         = 'Opened';
 $_['text_unopened']       = 'Unopened';
 $_['text_order']          = 'Order Information';
 $_['text_product']        = 'Product Information &amp; Reason for Return';
 $_['text_history']        = 'Add Return History';
+$_['text_return_items']   = 'Return Items';
 
 // Column
 $_['column_return_id']     = 'Return ID';
@@ -25,15 +26,21 @@ $_['column_date_modified'] = 'Date Modified';
 $_['column_comment']       = 'Comment';
 $_['column_notify']        = 'Customer Notified';
 $_['column_action']        = 'Action';
+$_['column_product_code']  = 'Product Code';
+$_['column_quantity']      = 'Quantity';
+$_['column_price']         = 'Price';
 
 // Entry
 $_['entry_customer']      = 'Customer';
 $_['entry_order_id']      = 'Order ID';
 $_['entry_date_ordered']  = 'Order Date';
+$_['entry_invoice_number'] = 'Invoice/Order Number';
+$_['entry_invoice_date']   = 'Invoice Date';
 $_['entry_firstname']     = 'First Name';
 $_['entry_lastname']      = 'Last Name';
 $_['entry_email']         = 'E-Mail';
 $_['entry_telephone']     = 'Telephone';
+$_['entry_refund_iban']    = 'Refund IBAN';
 $_['entry_product']       = 'Product';
 $_['entry_model']         = 'Model';
 $_['entry_quantity']      = 'Quantity';
@@ -47,12 +54,15 @@ $_['entry_return_id']     = 'Return ID';
 $_['entry_date_added']    = 'Date Added';
 $_['entry_date_modified'] = 'Date Modified';
 
+// Button
+$_['button_export']       = 'Export Selected to Excel';
+
 // Help
 $_['help_product']        = '(Autocomplete)';
 
 // Error
 $_['error_warning']       = 'Warning: Please check the form carefully for errors!';
-$_['error_permission']    = 'Warning: You do not have permission to modify returns!';
+$_['error_permission']    = 'Warning: You do not have permission to modify unilateral contract termination requests!';
 $_['error_order_id']      = 'Order ID required!';
 $_['error_firstname']     = 'First Name must be between 1 and 32 characters!';
 $_['error_lastname']      = 'Last Name must be between 1 and 32 characters!';
@@ -60,3 +70,5 @@ $_['error_email']         = 'E-Mail Address does not appear to be valid!';
 $_['error_telephone']     = 'Telephone must be between 3 and 32 characters!';
 $_['error_product']       = 'Product Name must be greater than 3 and less than 255 characters!';
 $_['error_model']         = 'Product Model must be greater than 3 and less than 64 characters!';
+$_['error_export_selected'] = 'Select at least one return to export to Excel!';
+$_['error_export_library']  = 'PhpSpreadsheet library is not available for Excel export.';

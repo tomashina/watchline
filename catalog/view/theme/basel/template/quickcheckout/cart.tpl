@@ -28,6 +28,9 @@
 			  <br />
 			  <span class="label label-info"><?php echo $text_recurring_item; ?></span> <small><?php echo $product['recurring']; ?></small>
 			  <?php } ?>
+			  <?php if (!empty($product['anchor_price_text'])) { ?>
+			  <span class="anchor-price"><?php echo htmlspecialchars($product['anchor_price_text'], ENT_QUOTES, 'UTF-8'); ?></span>
+			  <?php } ?>
             </div></td>
           <td class="quantity"><?php if ($edit_cart) { ?>
             <div class="qty-block">

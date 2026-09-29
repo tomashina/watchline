@@ -62,5 +62,10 @@ VQMod caches, regenerates canonical sitemaps and fails if the HTTP, JSON-LD,
 404, `llms.txt` or merchant-feed smoke tests do not pass. It does not replace a
 full hosting/database backup.
 
+The separate release procedure for anchor prices, the digital withdrawal form
+and the statutory-guarantee notice is documented in
+[`docs/compliance_release.md`](docs/compliance_release.md). Its SQL migrations
+are intentionally not executed by the SEO deploy finalizer.
+
 `test.php` and `gath.php` are intentionally excluded because the production
 copies contain hard-coded integration credentials and debug output.

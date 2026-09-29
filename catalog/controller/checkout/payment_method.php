@@ -75,9 +75,11 @@ class ControllerCheckoutPaymentMethod extends Controller {
 			$this->session->data['payment_methods'] = $method_data;
 		}
 
-		$data['text_payment_method'] = $this->language->get('text_payment_method');
-		$data['text_comments'] = $this->language->get('text_comments');
-		$data['text_loading'] = $this->language->get('text_loading');
+			$data['text_payment_method'] = $this->language->get('text_payment_method');
+			$data['text_comments'] = $this->language->get('text_comments');
+			$data['text_loading'] = $this->language->get('text_loading');
+			$data['text_legal_guarantee'] = $this->language->get('text_legal_guarantee');
+			$data['text_withdrawal_14_days'] = $this->language->get('text_withdrawal_14_days');
 
 		$data['button_continue'] = $this->language->get('button_continue');
 
@@ -105,7 +107,9 @@ class ControllerCheckoutPaymentMethod extends Controller {
 			$data['comment'] = '';
 		}
 
-		$data['scripts'] = $this->document->getScripts();
+			$data['scripts'] = $this->document->getScripts();
+			$data['legal_guarantee_url'] = 'https://europa.eu/youreurope/jamstva_hr';
+			$data['withdrawal_url'] = $this->url->link('account/return/add', '', true);
 
 		if ($this->config->get('config_checkout_id')) {
 			$this->load->model('catalog/information');

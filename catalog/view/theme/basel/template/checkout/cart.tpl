@@ -83,6 +83,9 @@
                   <?php } ?>
                   <small class="hidden-md hidden-lg"><br /><?php echo $column_model; ?>: <?php echo $product['model']; ?></small>
                   <small class="hidden-md hidden-lg"><br /><?php echo $column_price; ?>: <?php echo $product['price']; ?></small><br />
+				  <?php if (!empty($product['anchor_price_text'])) { ?>
+				  <span class="anchor-price"><?php echo htmlspecialchars($product['anchor_price_text'], ENT_QUOTES, 'UTF-8'); ?></span>
+				  <?php } ?>
 				  <a class="btn btn-default btn-tiny hidden-md hidden-lg" style="margin-top:5px;" onclick="cart.remove('<?php echo $product['cart_id']; ?>');"><?php echo $button_remove; ?></a>
                   </td>
                 <td class="hidden-xs hidden-sm"><?php echo $product['model']; ?></td>
@@ -158,4 +161,4 @@
       <?php echo $content_bottom; ?></div>
     <?php echo $column_right; ?></div>
 </div>
-<?php echo $footer; ?> 
+<?php echo $footer; ?>

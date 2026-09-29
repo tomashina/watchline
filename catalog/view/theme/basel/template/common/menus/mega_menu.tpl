@@ -113,6 +113,9 @@ $row_fluid = $row_fluid+$submenu['content_width'];
 <?php } ?>
 <a class="btn btn-outline btn-tiny catalog_hide" onclick="cart.add('<?php echo $submenu['product']['id']; ?>', '<?php echo $submenu['product']['minimum']; ?>');"><span class="global-cart"></span><?php echo $button_cart; ?></a>
 </div>
+<?php if (!empty($submenu['product']['price']) && !empty($submenu['product']['anchor_price_text'])) { ?>
+<div class="anchor-price anchor-price-card"><?php echo htmlspecialchars($submenu['product']['anchor_price_text'], ENT_QUOTES, 'UTF-8'); ?></div>
+<?php } ?>
 </div>
 <?php if ($submenu['product']['sale_end_date'] && $countdown_status) { ?>
 <script>

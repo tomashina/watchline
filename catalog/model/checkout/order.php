@@ -412,7 +412,13 @@ class ModelCheckoutOrder extends Model {
 				$data['text_quantity'] = $language->get('text_new_quantity');
 				$data['text_price'] = $language->get('text_new_price');
 				$data['text_total'] = $language->get('text_new_total');
+				$data['text_legal_guarantee'] = $language->get('text_new_legal_guarantee');
+				$data['text_legal_guarantee_more'] = $language->get('text_new_legal_guarantee_more');
 				$data['text_footer'] = $language->get('text_new_footer');
+				$data['legal_guarantee_url'] = 'https://europa.eu/youreurope/jamstva_hr';
+				$data['legal_guarantee_notice_image'] = rtrim($order_info['store_url'], '/') . '/catalog/view/theme/basel/image/legal-guarantee/legal-guarantee-notice-hr.png';
+				$data['show_legal_guarantee'] = true;
+				$legal_guarantee_notice_file = DIR_APPLICATION . 'view/theme/basel/image/legal-guarantee/legal-guarantee-notice-hr.png';
 	
 				$data['logo'] = $this->config->get('config_url') . 'image/' . $this->config->get('config_logo');
 				$data['store_name'] = $order_info['store_name'];
@@ -648,6 +654,8 @@ class ModelCheckoutOrder extends Model {
 					$text .= $order_info['comment'] . "\n\n";
 				}
 	
+				$text .= $language->get('text_new_legal_guarantee') . "\n";
+				$text .= $language->get('text_new_legal_guarantee_more') . ' ' . $data['legal_guarantee_url'] . "\n\n";
 				$text .= $language->get('text_new_footer') . "\n\n";
 	
 				$mail = new Mail();
@@ -665,6 +673,9 @@ class ModelCheckoutOrder extends Model {
 				$mail->setSubject(html_entity_decode($subject, ENT_QUOTES, 'UTF-8'));
 				$mail->setHtml($this->load->view('mail/order', $data));
 				$mail->setText($text);
+				if (is_file($legal_guarantee_notice_file)) {
+					$mail->addAttachment($legal_guarantee_notice_file);
+				}
 				$mail->send();
 	
 				// Admin Alert Mail
@@ -691,6 +702,7 @@ class ModelCheckoutOrder extends Model {
 					$data['text_download'] = '';
 	
 					$data['text_footer'] = '';
+					$data['show_legal_guarantee'] = false;
 	
 					$data['text_link'] = '';
 					$data['link'] = '';

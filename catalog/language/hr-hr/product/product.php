@@ -33,6 +33,8 @@ $_['text_week']                = 'tjedan';
 $_['text_semi_month']          = 'pola mjeseca';
 $_['text_month']               = 'mjesec';
 $_['text_year']                = 'godina';
+$_['text_legal_guarantee']      = 'Zakonsko jamstvo – najmanje 2 godine';
+$_['text_withdrawal_14_days']   = 'Pravo na jednostrani raskid u roku od 14 dana';
 
 // Entry
 $_['entry_qty']                = 'Kol';

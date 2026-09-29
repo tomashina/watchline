@@ -3,7 +3,8 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right"><a href="<?php echo $add; ?>" data-toggle="tooltip" title="<?php echo $button_add; ?>" class="btn btn-primary"><i class="fa fa-plus"></i></a>
-        <button type="button" data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-danger" onclick="confirm('<?php echo $text_confirm; ?>') ? $('#form-return').submit() : false;"><i class="fa fa-trash-o"></i></button>
+        <button type="button" data-toggle="tooltip" title="<?php echo $button_export; ?>" class="btn btn-success" onclick="if ($('input[name*=\'selected\']:checked').length) { $('#form-return').attr('action', $('#form-return').data('export')).submit(); $('#form-return').attr('action', $('#form-return').data('delete')); } else { alert('<?php echo $error_export_selected; ?>'); }"><i class="fa fa-file-excel-o"></i></button>
+        <button type="button" data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-danger" onclick="$('#form-return').attr('action', $('#form-return').data('delete')); confirm('<?php echo $text_confirm; ?>') ? $('#form-return').submit() : false;"><i class="fa fa-trash-o"></i></button>
       </div>
       <h1><?php echo $heading_title; ?></h1>
       <ul class="breadcrumb">
@@ -91,7 +92,7 @@
             </div>
           </div>
         </div>
-        <form action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form-return">
+        <form action="<?php echo $delete; ?>" data-delete="<?php echo $delete; ?>" data-export="<?php echo $export; ?>" method="post" enctype="multipart/form-data" id="form-return">
           <div class="table-responsive">
             <table class="table table-bordered table-hover">
               <thead>
@@ -152,7 +153,15 @@
                   <td class="text-right"><?php echo $return['return_id']; ?></td>
                   <td class="text-right"><?php echo $return['order_id']; ?></td>
                   <td class="text-left"><?php echo $return['customer']; ?></td>
-                  <td class="text-left"><?php echo $return['product']; ?></td>
+                  <td class="text-left">
+                    <?php if ($return['return_items']) { ?>
+                    <?php foreach ($return['return_items'] as $return_item) { ?>
+                    <div><?php echo $return_item['code']; ?><?php if ($return_item['quantity']) { ?> x <?php echo $return_item['quantity']; ?><?php } ?><?php if ($return_item['price']) { ?> - <?php echo $return_item['price']; ?><?php } ?></div>
+                    <?php } ?>
+                    <?php } else { ?>
+                    <?php echo $return['product']; ?>
+                    <?php } ?>
+                  </td>
                   <td class="text-left"><?php echo $return['model']; ?></td>
                   <td class="text-left"><?php echo $return['status']; ?></td>
                   <td class="text-left"><?php echo $return['date_added']; ?></td>
@@ -297,4 +306,4 @@ $('.date').datetimepicker({
 	pickTime: false
 });
 //--></script></div>
-<?php echo $footer; ?> 
+<?php echo $footer; ?>

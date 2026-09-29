@@ -52,12 +52,18 @@
                   <span class="price"><?php echo $product['special']; ?> </span><span class="price-old"><?php echo $product['price']; ?></span>
                   <?php } ?>
                   </span>
+                  <?php if (!empty($product['price']) && !empty($product['anchor_price_text'])) { ?>
+                  <span class="anchor-price"><?php echo htmlspecialchars($product['anchor_price_text'], ENT_QUOTES, 'UTF-8'); ?></span>
+                  <?php } ?>
                   <span class="display-block hidden-md hidden-lg"><?php echo $product['stock']; ?></span>
                 </span>
                 </td>
               <td class="hidden-xs hidden-sm"><?php echo $product['model']; ?></td>
               <td class="text-right hidden-xs hidden-sm"><?php echo $product['stock']; ?></td>
               <td class="text-right price-cell hidden-xs hidden-sm"><?php if ($product['price']) { ?>
+                <?php if (!empty($product['anchor_price_text'])) { ?>
+                <span class="anchor-price"><?php echo htmlspecialchars($product['anchor_price_text'], ENT_QUOTES, 'UTF-8'); ?></span>
+                <?php } ?>
                 
                   <?php if (!$product['special']) { ?>
                   <?php echo $product['price']; ?>

@@ -65,23 +65,6 @@
                 </div>
             <?php } ?>
 
-               <?php if ($product['special']) { ?>
-<br>
-
-<?php  if (isset($product['price_last_30']) && $product['price_last_30'] > $product['special'] && $product['price_last_30'] < $product['price'] ) { ?>
-
-          <span class="price-old" style="font-weight: 300;font-size: 14px;">NC zadnjih 30:  <?php echo $product['price_last_30']; ?></span>
-
-      <?php } else { ?>
-
-          <span class="price-old" style="font-weight: 300;font-size: 14px;margin-bottom:10px;display:block">NC zadnjih 30:  <?php echo $product['price']; ?></span>
-
-      <?php } ?>
-
-
-
-  
-    <?php } ?>
             <div class="price-wrapper">
             <?php if ($product['price']) { ?>
             <div class="price">
@@ -98,6 +81,9 @@
             <p class="description"><?php if (isset($product['description'])) echo $product['description']; ?></p>
             <a class="btn catalog_hide <?php if ($basel_list_style == '6') { echo 'btn-contrast'; } else { echo 'btn-outline';} ?>" onclick="cart.add('<?php echo $product['product_id']; ?>', '<?php echo $product['minimum']; ?>');"><span class="global-cart"></span><?php echo $button_cart; ?></a>
             </div><!-- .price-wrapper -->
+            <?php if (!empty($product['price']) && !empty($product['anchor_price_text'])) { ?>
+            <div class="anchor-price anchor-price-card"><?php echo htmlspecialchars($product['anchor_price_text'], ENT_QUOTES, 'UTF-8'); ?></div>
+            <?php } ?>
             <div class="plain-links">
             <a class="icon is_wishlist link-hover-color" onclick="wishlist.add('<?php echo $product['product_id']; ?>');"><span class="icon-heart"></span> <?php echo $button_wishlist; ?></a>
             <a class="icon is_compare link-hover-color" onclick="compare.add('<?php echo $product['product_id']; ?>');"><span class="icon-refresh"></span> <?php echo $button_compare; ?></a>

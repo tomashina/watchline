@@ -44,6 +44,14 @@
                   <?php } ?>
                 </div>
               </div>
+              <?php if ($invoice_number) { ?>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-invoice-number"><?php echo $entry_invoice_number; ?></label>
+                <div class="col-sm-10">
+                  <input type="text" name="invoice_number" value="<?php echo $invoice_number; ?>" id="input-invoice-number" class="form-control" readonly="readonly" />
+                </div>
+              </div>
+              <?php } ?>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-date-ordered"><?php echo $entry_date_ordered; ?></label>
                 <div class="col-sm-3">
@@ -54,6 +62,14 @@
                     </span></div>
                 </div>
               </div>
+              <?php if ($invoice_date) { ?>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-invoice-date"><?php echo $entry_invoice_date; ?></label>
+                <div class="col-sm-3">
+                  <input type="text" name="invoice_date" value="<?php echo $invoice_date; ?>" id="input-invoice-date" class="form-control" readonly="readonly" />
+                </div>
+              </div>
+              <?php } ?>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-customer"><?php echo $entry_customer; ?></label>
                 <div class="col-sm-10">
@@ -97,6 +113,14 @@
                   <?php  } ?>
                 </div>
               </div>
+              <?php if ($refund_iban) { ?>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-refund-iban"><?php echo $entry_refund_iban; ?></label>
+                <div class="col-sm-10">
+                  <input type="text" name="refund_iban" value="<?php echo $refund_iban; ?>" id="input-refund-iban" class="form-control" readonly="readonly" />
+                </div>
+              </div>
+              <?php } ?>
             </fieldset>
             <fieldset>
               <legend><?php echo $text_product; ?></legend>
@@ -125,10 +149,38 @@
                   <input type="text" name="quantity" value="<?php echo $quantity; ?>" placeholder="<?php echo $entry_quantity; ?>" id="input-quantity" class="form-control" />
                 </div>
               </div>
+              <?php if ($return_items) { ?>
+              <div class="form-group">
+                <label class="col-sm-2 control-label"><?php echo $text_return_items; ?></label>
+                <div class="col-sm-10">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <td class="text-left"><?php echo $column_product_code; ?></td>
+                          <td class="text-right"><?php echo $column_quantity; ?></td>
+                          <td class="text-right"><?php echo $column_price; ?></td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php foreach ($return_items as $return_item) { ?>
+                        <tr>
+                          <td class="text-left"><?php echo $return_item['code']; ?></td>
+                          <td class="text-right"><?php echo $return_item['quantity']; ?></td>
+                          <td class="text-right"><?php echo $return_item['price']; ?></td>
+                        </tr>
+                        <?php } ?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <?php } ?>
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-return-reason"><?php echo $entry_return_reason; ?></label>
                 <div class="col-sm-10">
                   <select name="return_reason_id" id="input-return-reason" class="form-control">
+                    <option value="0"<?php echo (int)$return_reason_id === 0 ? ' selected="selected"' : ''; ?>>&mdash;</option>
                     <?php foreach ($return_reasons as $return_reason) { ?>
                     <?php if ($return_reason['return_reason_id'] == $return_reason_id) { ?>
                     <option value="<?php echo $return_reason['return_reason_id']; ?>" selected="selected"><?php echo $return_reason['name']; ?></option>
@@ -231,9 +283,9 @@
           </div>
           <?php } ?>
         </form>
-      </div>
-    </div>
-  </div>
+                  </div>
+                </div>
+              </div>
   <script type="text/javascript"><!--
 $('input[name=\'customer\']').autocomplete({
 	'source': function(request, response) {

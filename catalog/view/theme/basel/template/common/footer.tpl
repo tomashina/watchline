@@ -4,6 +4,15 @@
 <div class="container">
 <?php echo $position_bottom; ?>
 </div>
+<div class="legal-guarantee-bar">
+  <div class="container">
+    <a class="legal-guarantee-trigger" href="<?php echo $legal_guarantee_url; ?>" data-toggle="modal" data-target="#legal-guarantee-modal" aria-controls="legal-guarantee-modal" aria-haspopup="dialog">
+      <i class="fa fa-shield" aria-hidden="true"></i>
+      <span><?php echo $text_legal_guarantee; ?></span>
+      <i class="fa fa-angle-right" aria-hidden="true"></i>
+    </a>
+  </div>
+</div>
 <div id="footer">
 <div class="container">
 <?php if ($footer_block_1 && $footer_block_1 != '<p><br></p>') { ?>
@@ -106,11 +115,32 @@
 <?php } ?>
 </div>
 </div>
+
+<div class="modal fade legal-guarantee-modal" id="legal-guarantee-modal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="legal-guarantee-modal-title">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="<?php echo $text_legal_guarantee_close; ?>"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="legal-guarantee-modal-title"><?php echo $text_legal_guarantee_title; ?></h4>
+      </div>
+      <div class="modal-body">
+        <div class="legal-guarantee-notice-frame" tabindex="0" role="region" aria-label="<?php echo $text_legal_guarantee_notice_alt; ?>">
+          <a href="<?php echo $legal_guarantee_notice_svg; ?>" target="_blank" rel="noopener" aria-label="<?php echo $text_legal_guarantee_open_full; ?>">
+            <img src="<?php echo $legal_guarantee_notice_svg; ?>" alt="<?php echo $text_legal_guarantee_notice_alt; ?>" width="595" height="842" loading="lazy" decoding="async" />
+          </a>
+        </div>
+        <p class="legal-guarantee-more">
+          <a href="<?php echo $legal_guarantee_url; ?>" target="_blank" rel="noopener noreferrer"><?php echo $text_legal_guarantee_more; ?> <i class="fa fa-external-link" aria-hidden="true"></i></a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 <link href="catalog/view/javascript/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
 <link href="catalog/view/theme/basel/js/lightgallery/css/lightgallery.css" rel="stylesheet" />
 <script src="catalog/view/theme/basel/js/jquery.matchHeight.min.js"></script>
 <script src="catalog/view/theme/basel/js/countdown.js"></script>
-<script src="catalog/view/theme/basel/js/live_search.js"></script>
+<script src="catalog/view/theme/basel/js/live_search.js?v=1.1"></script>
 <script src="catalog/view/theme/basel/js/featherlight.js"></script>
 <?php if ($view_popup) { ?>
 <!-- Popup -->

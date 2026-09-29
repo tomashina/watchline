@@ -141,6 +141,14 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => array()		
 				);					
 			}
+
+			if ($this->user->hasPermission('access', 'extension/module/anchor_price')) {
+				$catalog[] = array(
+					'name'     => 'Sidrene cijene',
+					'href'     => $this->url->link('extension/module/anchor_price', 'token=' . $this->session->data['token'], true),
+					'children' => array()
+				);
+			}
 			
 			if ($catalog) {
 				$data['menus'][] = array(

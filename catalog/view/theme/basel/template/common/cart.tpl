@@ -10,6 +10,9 @@
             <?php } ?></td>
           <td class="main"><a class="product-name main-font" href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
             <?php echo $product['quantity']; ?> x <span class="price"><?php echo $product['price']; ?></span>
+            <?php if (!empty($product['anchor_price_text'])) { ?>
+            <span class="anchor-price"><?php echo htmlspecialchars($product['anchor_price_text'], ENT_QUOTES, 'UTF-8'); ?></span>
+            <?php } ?>
             <?php if ($product['option']) { ?>
             <?php foreach ($product['option'] as $option) { ?>
             <br />

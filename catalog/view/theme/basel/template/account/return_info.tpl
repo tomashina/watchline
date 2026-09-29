@@ -30,23 +30,39 @@
           </tr>
         </tbody>
       </table>
-      <h2><?php echo $text_product; ?></h2>
+      <h2><?php echo $text_return_products_title; ?></h2>
       <table class="table table-bordered margin-b30">
         <thead>
           <tr>
-            <td class="text-left" style="width: 33.3%;"><?php echo $column_product; ?></td>
-            <td class="text-left" style="width: 33.3%;"><?php echo $column_model; ?></td>
-            <td class="text-right" style="width: 33.3%;"><?php echo $column_quantity; ?></td>
+            <td class="text-left"><?php echo $entry_product_code; ?></td>
+            <td class="text-right"><?php echo $column_quantity; ?></td>
+            <td class="text-right"><?php echo $column_price; ?></td>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($return_products as $return_product) { ?>
+          <tr>
+            <td class="text-left"><?php echo $return_product['code']; ?></td>
+            <td class="text-right"><?php echo $return_product['quantity']; ?></td>
+            <td class="text-right"><?php echo $return_product['price']; ?></td>
+          </tr>
+          <?php } ?>
+        </tbody>
+      </table>
+      <?php if ($refund_iban) { ?>
+      <table class="table table-bordered margin-b30">
+        <thead>
+          <tr>
+            <td class="text-left"><?php echo $entry_refund_iban; ?></td>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="text-left"><?php echo $product; ?></td>
-            <td class="text-left"><?php echo $model; ?></td>
-            <td class="text-right"><?php echo $quantity; ?></td>
+            <td class="text-left"><?php echo $refund_iban; ?></td>
           </tr>
         </tbody>
       </table>
+      <?php } ?>
       <h2><?php echo $text_reason; ?></h2>
       <table class="list table table-bordered margin-b30">
         <thead>

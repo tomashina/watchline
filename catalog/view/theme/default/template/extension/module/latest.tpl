@@ -29,6 +29,9 @@
           <span class="price-tax"><?php echo $text_tax; ?> <?php echo $product['tax']; ?></span>
           <?php } ?>
         </p>
+        <?php if (!empty($product['anchor_price_text'])) { ?>
+        <div class="anchor-price anchor-price-card"><?php echo htmlspecialchars($product['anchor_price_text'], ENT_QUOTES, 'UTF-8'); ?></div>
+        <?php } ?>
         <?php } ?>
       </div>
       <div class="button-group">

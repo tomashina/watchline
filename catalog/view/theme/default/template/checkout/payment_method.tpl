@@ -24,6 +24,10 @@
 <p>
   <textarea name="comment" rows="8" class="form-control"><?php echo $comment; ?></textarea>
 </p>
+<div class="legal-guarantee-checkout">
+  <a href="<?php echo $legal_guarantee_url; ?>" target="_blank" rel="noopener noreferrer"><i class="fa fa-shield" aria-hidden="true"></i><?php echo $text_legal_guarantee; ?></a>
+  <a href="<?php echo $withdrawal_url; ?>" target="_blank" rel="noopener"><i class="fa fa-undo" aria-hidden="true"></i><?php echo $text_withdrawal_14_days; ?></a>
+</div>
 <?php if ($text_agree) { ?>
 <div class="buttons">
   <div class="pull-right"><?php echo $text_agree; ?>

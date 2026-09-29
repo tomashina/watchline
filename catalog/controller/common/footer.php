@@ -19,8 +19,15 @@ class ControllerCommonFooter extends Controller {
 		$data['text_order'] = $this->language->get('text_order');
 		$data['text_wishlist'] = $this->language->get('text_wishlist');
 		$data['text_newsletter'] = $this->language->get('text_newsletter');
+		$data['text_legal_guarantee'] = $this->language->get('text_legal_guarantee');
+		$data['text_legal_guarantee_title'] = $this->language->get('text_legal_guarantee_title');
+		$data['text_legal_guarantee_more'] = $this->language->get('text_legal_guarantee_more');
+		$data['text_legal_guarantee_open_full'] = $this->language->get('text_legal_guarantee_open_full');
+		$data['text_legal_guarantee_notice_alt'] = $this->language->get('text_legal_guarantee_notice_alt');
+		$data['text_legal_guarantee_close'] = $this->language->get('text_legal_guarantee_close');
 
-		$data['ruta'] = $this->url->link($this->request->get['route'], '', 'SSL');
+		$route = isset($this->request->get['route']) ? $this->request->get['route'] : 'common/home';
+		$data['ruta'] = $this->url->link($route, '', 'SSL');
 
 		$this->load->model('catalog/information');
 
@@ -35,6 +42,11 @@ class ControllerCommonFooter extends Controller {
 			}
 		}
 
+		$data['informations'][] = array(
+			'title' => (strpos((string)$this->config->get('config_language'), 'hr') === 0 ? 'Cjenici' : 'Price lists'),
+			'href'  => $this->url->link('information/price_list')
+		);
+
 		$data['contact'] = $this->url->link('information/contact');
 		$data['return'] = $this->url->link('account/return/add', '', true);
 		$data['sitemap'] = $this->url->link('information/sitemap');
@@ -46,6 +58,8 @@ class ControllerCommonFooter extends Controller {
 		$data['order'] = $this->url->link('account/order', '', true);
 		$data['wishlist'] = $this->url->link('account/wishlist', '', true);
 		$data['newsletter'] = $this->url->link('account/newsletter', '', true);
+		$data['legal_guarantee_url'] = 'https://europa.eu/youreurope/jamstva_hr';
+		$data['legal_guarantee_notice_svg'] = 'catalog/view/theme/basel/image/legal-guarantee/legal-guarantee-notice-hr.svg';
 
 		$data['powered'] = sprintf($this->language->get('text_powered'), $this->config->get('config_name'), date('Y', time()));
 

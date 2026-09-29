@@ -57,6 +57,9 @@
               </span>
               <?php } ?>
               
+              <?php if (!empty($product['price']) && !empty($product['anchor_price_text'])) { ?>
+              <span class="anchor-price anchor-price-compare"><?php echo htmlspecialchars($product['anchor_price_text'], ENT_QUOTES, 'UTF-8'); ?></span>
+              <?php } ?>
               <input type="button" value="<?php echo $button_cart; ?>" class="btn btn-primary btn-sm catalog_hide" onclick="cart.add('<?php echo $product['product_id']; ?>', '<?php echo $product['minimum']; ?>');" />
               
               </td>

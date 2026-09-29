@@ -110,10 +110,25 @@
       </tr>
       <?php } ?>
     </tfoot>
-  </table>
-  <p style="margin-top: 0px; margin-bottom: 20px;"><?php echo $text_footer; ?></p>
+	  </table>
+	  <?php if (!empty($show_legal_guarantee)) { ?>
+	  <table style="border-collapse: collapse; width: 100%; border: 1px solid #cce6f4; background-color: #eef8fc; margin-bottom: 20px;">
+	    <tbody>
+	      <tr>
+	        <td style="font-size: 12px; text-align: left; padding: 14px; color: #222222;">
+	          <p style="margin-top: 0; margin-bottom: 12px;"><strong><?php echo $text_legal_guarantee; ?></strong></p>
+	          <p style="margin-top: 0; margin-bottom: 12px; text-align: center;">
+	            <a href="<?php echo htmlspecialchars($legal_guarantee_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener noreferrer"><img src="<?php echo htmlspecialchars($legal_guarantee_notice_image, ENT_QUOTES, 'UTF-8'); ?>" width="620" alt="<?php echo htmlspecialchars($text_legal_guarantee, ENT_QUOTES, 'UTF-8'); ?>" style="display: block; width: 100%; max-width: 620px; height: auto; margin: 0 auto; border: 0;" /></a>
+	          </p>
+	          <p style="margin: 0;"><?php echo $text_legal_guarantee_more; ?> <a href="<?php echo htmlspecialchars($legal_guarantee_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener noreferrer"><?php echo htmlspecialchars($legal_guarantee_url, ENT_QUOTES, 'UTF-8'); ?></a></p>
+	        </td>
+	      </tr>
+	    </tbody>
+	  </table>
+	  <?php } ?>
+	  <p style="margin-top: 0px; margin-bottom: 20px;"><?php echo $text_footer; ?></p>
 
-  <p style="margin-top: 0px; margin-bottom: 20px;"><a href="https://www.watchline.hr/uvjeti-kupovine">Uvjeti poslovanja"></a></p>
+	  <p style="margin-top: 0px; margin-bottom: 20px;"><a href="https://www.watchline.hr/uvjeti-kupovine">Uvjeti poslovanja</a></p>
 </div>
 </body>
 </html>

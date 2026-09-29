@@ -1,9 +1,11 @@
 <?php  
 class ControllerQuickCheckoutTerms extends Controller {
-  	public function index() {
+	public function index() {
 		$data = $this->load->language('checkout/checkout');
 		$data = array_merge($data, $this->load->language('quickcheckout/checkout'));
-		
+		$data['legal_guarantee_url'] = 'https://europa.eu/youreurope/jamstva_hr';
+		$data['withdrawal_url'] = $this->url->link('account/return/add', '', true);
+
 		if ($this->config->get('config_checkout_id')) {
 			$this->load->model('catalog/information');
 			

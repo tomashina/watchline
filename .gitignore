@@ -15,6 +15,7 @@ Thumbs.db
 
 # Production data and ad-hoc integration scripts
 *.sql
+!/sql/*.sql
 /webstanje.csv
 /test.php
 /gath.php

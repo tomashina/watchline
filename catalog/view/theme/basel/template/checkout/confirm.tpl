@@ -22,7 +22,11 @@
           <?php if($product['recurring']) { ?>
           <br />
           <span class="label label-info"><?php echo $text_recurring_item; ?></span> <small><?php echo $product['recurring']; ?></small>
-          <?php } ?></td>
+          <?php } ?>
+          <?php if (!empty($product['anchor_price_text'])) { ?>
+          <span class="anchor-price"><?php echo htmlspecialchars($product['anchor_price_text'], ENT_QUOTES, 'UTF-8'); ?></span>
+          <?php } ?>
+        </td>
         <td class="text-left hidden-xs hidden-sm"><?php echo $product['model']; ?></td>
         <td class="text-right hidden-xs hidden-sm"><?php echo $product['quantity']; ?></td>
         <td class="text-right hidden-xs hidden-sm"><?php echo $product['price']; ?></td>

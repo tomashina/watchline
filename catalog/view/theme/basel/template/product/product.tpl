@@ -134,22 +134,14 @@
         <?php if (!$special) { ?>
         <li><span class="live-price"><?php echo $price; ?>  <?php $pr = $price; ?>  <span></li>
         <?php } else { ?>
-              <?php  if ($price_last_30 > $special && $price_last_30 < $price ) { ?>
-
-              <li> <span class="price-old">NC 30 dana:   <?php echo $price_last_30; ?></span>
-
-            <?php } else { ?>
-
-               <li> <span class="price-old"> NC 30 dana:   <?php echo $price; ?></span>
-
-            <?php } ?>
-
-         
-<br>
+          <li><span class="price-old"><?php echo $price; ?></span><br>
           <span class="live-price-new"><?php echo $special; ?> <?php $pr = $special; ?><span></li>
         <span id="special_countdown"></span>
         <?php } ?>
       </ul>
+        <?php if (!empty($anchor_price_text)) { ?>
+        <div class="anchor-price anchor-price-detail"><?php echo htmlspecialchars($anchor_price_text, ENT_QUOTES, 'UTF-8'); ?></div>
+        <?php } ?>
         <p class="info p-tax"> 25% PDV uključeno </p>
         <p class="info "><i class="icon-tag"></i> Dodatnih <strong>10% popusta</strong> uz <a href="#newss" class="sliding-link in_stock"><u>newsletter prijavu</u> </a></p>
 
@@ -397,9 +389,13 @@
             <?php if ($minimum > 1) { ?>
             <div class="alert alert-sm alert-info"><i class="fa fa-info-circle"></i> <?php echo $text_minimum; ?></div>
             <?php } ?>
-          
+
           </div><!-- #product ends -->
 
+          <div class="product-legal-links">
+            <a class="product-legal-link" href="<?php echo $legal_guarantee_url; ?>" data-toggle="modal" data-target="#legal-guarantee-modal" aria-controls="legal-guarantee-modal" aria-haspopup="dialog"><i class="fa fa-shield" aria-hidden="true"></i><?php echo $text_legal_guarantee; ?></a>
+            <a class="product-legal-link" href="<?php echo $withdrawal_url; ?>"><i class="fa fa-undo" aria-hidden="true"></i><?php echo $text_withdrawal_14_days; ?></a>
+          </div>
 
 	<p class="info is_wishlist"><a onclick="wishlist.add('<?php echo $product_id; ?>');"><i class="icon-heart"></i> <?php echo $button_wishlist; ?></a></p>
 	<p class="info is_compare"><a onclick="compare.add('<?php echo $product_id; ?>');"><i class="icon-refresh"></i> <?php echo $button_compare; ?></a></p>
