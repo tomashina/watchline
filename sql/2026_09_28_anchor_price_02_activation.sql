@@ -39,7 +39,7 @@ WHERE `store_id` = 0
 
 -- Zakonski/dogovoreni bazni datum. Artikli dodani kasnije dobivaju datum
 -- svoje prve objave u backfillu ili kroz admin event pri aktivaciji. Ako se
--- event zaobiđe, runtime zapis ostaje pending do administratorske potvrde.
+-- event zaobiđe, runtime sinkronizacija automatski snima prvu uočenu objavu.
 INSERT INTO `oc_setting` (`store_id`, `code`, `key`, `value`, `serialized`)
 SELECT 0, 'module_anchor_price', 'module_anchor_price_reference_date', '2026-09-10', 0
 FROM DUAL

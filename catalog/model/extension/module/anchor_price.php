@@ -1,6 +1,7 @@
 <?php
 class ModelExtensionModuleAnchorPrice extends Model {
 	const ARCHIVE_DAYS = 30;
+	const PUBLICATION_LOCATION_CODE = 'WATCHLINE';
 
 	private $table_exists;
 	private $audit_table_exists;
@@ -92,8 +93,8 @@ class ModelExtensionModuleAnchorPrice extends Model {
 		$query = $this->db->query("SELECT p.product_id, p.price, p.tax_class_id FROM `" . DB_PREFIX . "product` p INNER JOIN `" . DB_PREFIX . "product_to_store` p2s ON (p2s.product_id = p.product_id AND p2s.store_id = '" . $store_id . "') LEFT JOIN `" . DB_PREFIX . "anchor_price` ap ON (ap.product_id = p.product_id AND ap.store_id = p2s.store_id) WHERE ap.anchor_price_id IS NULL AND p.status = '1' AND p.date_available <= NOW()");
 
 		foreach ($query->rows as $product) {
-			// A missing active product has no trustworthy historical first-listing date.
-			// Keep the observed value pending until an administrator verifies it.
+			// The first observed public value is the first-listing snapshot. Active
+			// products are immediately usable without a separate admin confirmation.
 			$anchor_date = $observed_date;
 			$rule_code = 'first_listing';
 			$gross_price = $this->tax->calculate((float)$product['price'], (int)$product['tax_class_id'], true);
@@ -107,11 +108,11 @@ class ModelExtensionModuleAnchorPrice extends Model {
 			$this->db->query('START TRANSACTION');
 
 			try {
-				$this->db->query("INSERT IGNORE INTO `" . DB_PREFIX . "anchor_price` SET product_id = '" . (int)$product['product_id'] . "', store_id = '" . $store_id . "', price = '" . (float)$product['price'] . "', gross_price = '" . (float)$gross_price . "', currency_code = '" . $this->db->escape($currency_code) . "', tax_class_id = '" . (int)$product['tax_class_id'] . "', tax_context = '" . $this->db->escape($tax_context_json) . "', reference_date = '" . $this->db->escape($anchor_date) . "', rule_code = '" . $this->db->escape($rule_code) . "', source = '" . $this->db->escape($source) . "', verification_status = 'pending', created_by = '0', date_added = NOW(), date_modified = NOW()");
+				$this->db->query("INSERT IGNORE INTO `" . DB_PREFIX . "anchor_price` SET product_id = '" . (int)$product['product_id'] . "', store_id = '" . $store_id . "', price = '" . (float)$product['price'] . "', gross_price = '" . (float)$gross_price . "', currency_code = '" . $this->db->escape($currency_code) . "', tax_class_id = '" . (int)$product['tax_class_id'] . "', tax_context = '" . $this->db->escape($tax_context_json) . "', reference_date = '" . $this->db->escape($anchor_date) . "', rule_code = '" . $this->db->escape($rule_code) . "', source = '" . $this->db->escape($source) . "', verification_status = 'confirmed', created_by = '0', date_added = NOW(), date_modified = NOW()");
 
 				if ($this->db->countAffected()) {
 					$anchor_price_id = (int)$this->db->getLastId();
-					$this->addSnapshotAudit($anchor_price_id, $product, $store_id, $currency_code, $gross_price, $tax_context_json, $anchor_date, $rule_code, $source, 'pending');
+					$this->addSnapshotAudit($anchor_price_id, $product, $store_id, $currency_code, $gross_price, $tax_context_json, $anchor_date, $rule_code, $source, 'confirmed');
 					$count++;
 				}
 
@@ -179,54 +180,31 @@ class ModelExtensionModuleAnchorPrice extends Model {
 			if (!$products) {
 				throw new Exception('Cjenik nema nijedan potvrđen aktivan proizvod.');
 			}
-			$location_codes = array('PJ1', 'PJ3');
+			$location_code = self::PUBLICATION_LOCATION_CODE;
 			$results = array();
 			$now = new DateTime('now', new DateTimeZone('Europe/Zagreb'));
 
 			if (!$force) {
-				foreach ($location_codes as $location_code) {
-					$existing = $this->getTodayPublication($store_id, $location_code, $now);
-					if ($existing) {
-						$results[$location_code] = array('success' => true, 'existing' => true, 'publication' => $existing);
-					}
-				}
-
-				if (count($results) === count($location_codes)
-					&& !empty($results['PJ1']['publication']['batch_key'])
-					&& $results['PJ1']['publication']['batch_key'] === $results['PJ3']['publication']['batch_key']
-					&& $this->publishedBatchIsValid($store_id, $results['PJ1']['publication']['batch_key'])) {
+				$existing = $this->getTodayPublication($store_id, $location_code, $now);
+				if ($existing && $this->publishedBatchIsValid($store_id, $existing['batch_key'])) {
+					$results[$location_code] = array('success' => true, 'existing' => true, 'publication' => $existing);
 					$this->expireOldPublications($now);
 					$this->db->query("SELECT RELEASE_LOCK('" . $this->db->escape($lock_name) . "')");
 					return array('success' => true, 'locations' => $results);
 				}
-
-				// A lone file cannot be proven to use the same snapshot as a later retry.
-				foreach ($results as $result) {
-					$this->invalidatePublication($result['publication'], 'Nepotpun dnevni PJ1/PJ3 par je zamijenjen.');
-				}
-				$results = array();
 			}
 
 			$batch_key = $this->createBatchKey();
+			$result = $this->generateLocationPublication($location_code, $products, $now, $batch_key);
+			$results[$location_code] = $result;
 
-			// Both locations deliberately receive the exact same in-memory product snapshot.
-			foreach ($location_codes as $location_code) {
-				$result = $this->generateLocationPublication($location_code, $products, $now, $batch_key);
-				$results[$location_code] = $result;
-
-				if (empty($result['success'])) {
-					foreach ($results as $published_result) {
-						if (!empty($published_result['success']) && empty($published_result['existing']) && !empty($published_result['publication'])) {
-							$this->invalidatePublication($published_result['publication'], 'Dnevni PJ1/PJ3 par nije dovršen.');
-						}
-					}
-					$this->expireOldPublications($now);
-					$this->db->query("SELECT RELEASE_LOCK('" . $this->db->escape($lock_name) . "')");
-					return array('success' => false, 'locations' => $results);
-				}
+			if (empty($result['success'])) {
+				$this->expireOldPublications($now);
+				$this->db->query("SELECT RELEASE_LOCK('" . $this->db->escape($lock_name) . "')");
+				return array('success' => false, 'locations' => $results);
 			}
 
-			$results = $this->publishPublicationPair($results, $now, $batch_key);
+			$results = $this->publishPublication($results, $now, $batch_key);
 
 			$this->expireOldPublications($now);
 			$this->db->query("SELECT RELEASE_LOCK('" . $this->db->escape($lock_name) . "')");
@@ -236,7 +214,7 @@ class ModelExtensionModuleAnchorPrice extends Model {
 			if (isset($results) && is_array($results)) {
 				foreach ($results as $published_result) {
 					if (!empty($published_result['success']) && empty($published_result['existing']) && !empty($published_result['publication'])) {
-						$this->invalidatePublication($published_result['publication'], 'Dnevni PJ1/PJ3 par nije dovršen.');
+						$this->invalidatePublication($published_result['publication'], 'Dnevna objava cjenika nije dovršena.');
 					}
 				}
 			}
@@ -282,7 +260,7 @@ class ModelExtensionModuleAnchorPrice extends Model {
 
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "anchor_price_publication` WHERE store_id = '" . (int)$store_id . "' AND batch_key = '" . $this->db->escape($batch_key) . "' AND status = 'published' ORDER BY location_code ASC, publication_id ASC");
 
-		return (bool)$this->validatedPublicationPair($query->rows);
+		return (bool)$this->validatedPublication($query->rows);
 	}
 
 	private function invalidatePublication(array $publication, $reason) {
@@ -296,7 +274,7 @@ class ModelExtensionModuleAnchorPrice extends Model {
 	private function generateLocationPublication($location_code, array $products, DateTime $now, $batch_key) {
 		$location_code = strtoupper(preg_replace('/[^A-Z0-9_-]/i', '', (string)$location_code));
 
-		if (!in_array($location_code, array('PJ1', 'PJ3'), true)) {
+		if ($location_code !== self::PUBLICATION_LOCATION_CODE) {
 			return array('success' => false, 'error' => 'Nepoznata oznaka prodajnog mjesta.');
 		}
 
@@ -352,7 +330,7 @@ class ModelExtensionModuleAnchorPrice extends Model {
 			$is_available = (int)$product['quantity'] > 0;
 
 			$row = array(
-				$location_code,
+				$this->publicationLabel(),
 				$product['product_id'],
 				$this->csvText($product['name']),
 				$this->csvText($product['model']),
@@ -409,14 +387,14 @@ class ModelExtensionModuleAnchorPrice extends Model {
 		return array('success' => true, 'existing' => false, 'publication' => $publication);
 	}
 
-	private function publishPublicationPair(array $results, DateTime $now, $batch_key) {
-		if (count($results) !== 2 || empty($results['PJ1']['publication']) || empty($results['PJ3']['publication'])) {
-			throw new Exception('Dnevni PJ1/PJ3 par nije spreman za objavu.');
+	private function publishPublication(array $results, DateTime $now, $batch_key) {
+		if (count($results) !== 1 || empty($results[self::PUBLICATION_LOCATION_CODE]['publication'])) {
+			throw new Exception('Dnevni cjenik nije spreman za objavu.');
 		}
 
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "anchor_price_publication` WHERE store_id = '" . (int)$this->config->get('config_store_id') . "' AND batch_key = '" . $this->db->escape($batch_key) . "' AND status = 'staged' ORDER BY location_code ASC");
-		if ($query->num_rows !== 2 || $query->rows[0]['location_code'] !== 'PJ1' || $query->rows[1]['location_code'] !== 'PJ3') {
-			throw new Exception('Dnevni PJ1/PJ3 par nije potpun.');
+		if ($query->num_rows !== 1 || $query->row['location_code'] !== self::PUBLICATION_LOCATION_CODE) {
+			throw new Exception('Dnevni cjenik nije potpun.');
 		}
 
 		$publication_ids = array();
@@ -430,8 +408,8 @@ class ModelExtensionModuleAnchorPrice extends Model {
 		$this->db->query('START TRANSACTION');
 		try {
 			$this->db->query("UPDATE `" . DB_PREFIX . "anchor_price_publication` SET status = 'published', published_at = '" . $this->db->escape($now->format('Y-m-d H:i:s')) . "' WHERE publication_id IN (" . implode(',', $publication_ids) . ") AND batch_key = '" . $this->db->escape($batch_key) . "' AND status = 'staged'");
-			if ($this->db->countAffected() !== 2) {
-				throw new Exception('Atomska objava dnevnog PJ1/PJ3 para nije uspjela.');
+			if ($this->db->countAffected() !== 1) {
+				throw new Exception('Atomska objava dnevnog cjenika nije uspjela.');
 			}
 			$this->db->query('COMMIT');
 		} catch (Exception $exception) {
@@ -472,16 +450,12 @@ class ModelExtensionModuleAnchorPrice extends Model {
 		foreach ($products as $product) {
 			if (empty($product['anchor_price_id'])
 				|| $product['verification_status'] !== 'confirmed'
-				|| trim((string)$product['name']) === ''
-				|| trim((string)$product['model']) === ''
-				|| empty($product['manufacturer_id'])
-				|| trim((string)$product['manufacturer']) === ''
-				|| $this->hasInvalidPublicationBarcode($product)) {
+				|| empty($product['reference_date'])) {
 				$total++;
 			}
 		}
 		if ($total > 0) {
-			throw new Exception($total . ' aktivnih proizvoda nema potvrđenu sidrenu cijenu, naziv, šifru ili marku, ili sadrži neispravan GTIN barkod. Objava je zaustavljena.');
+			throw new Exception($total . ' aktivnih proizvoda nema potvrđenu sidrenu cijenu. Objava je zaustavljena.');
 		}
 	}
 
@@ -521,10 +495,9 @@ class ModelExtensionModuleAnchorPrice extends Model {
 		}
 
 		foreach ($batches as $rows) {
-			$pair = $this->validatedPublicationPair($rows);
-			if ($pair) {
-				$publications[] = $pair['PJ1'];
-				$publications[] = $pair['PJ3'];
+			$publication = $this->validatedPublication($rows);
+			if ($publication) {
+				$publications[] = $publication;
 			}
 		}
 
@@ -548,43 +521,30 @@ class ModelExtensionModuleAnchorPrice extends Model {
 		}
 
 		$publication = $query->row;
-		$pair_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "anchor_price_publication` WHERE store_id = '" . (int)$publication['store_id'] . "' AND batch_key = '" . $this->db->escape($publication['batch_key']) . "' AND status = 'published' AND published_at >= DATE_SUB(NOW(), INTERVAL " . (int)self::ARCHIVE_DAYS . " DAY) ORDER BY location_code ASC");
-		$pair = $this->validatedPublicationPair($pair_query->rows);
+		$batch_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "anchor_price_publication` WHERE store_id = '" . (int)$publication['store_id'] . "' AND batch_key = '" . $this->db->escape($publication['batch_key']) . "' AND status = 'published' AND published_at >= DATE_SUB(NOW(), INTERVAL " . (int)self::ARCHIVE_DAYS . " DAY) ORDER BY location_code ASC");
+		$validated = $this->validatedPublication($batch_query->rows);
 
-		return $pair && isset($pair[$publication['location_code']]) ? $pair[$publication['location_code']] : false;
+		return $validated && (int)$validated['publication_id'] === (int)$publication['publication_id'] ? $validated : false;
 	}
 
-	private function validatedPublicationPair(array $rows) {
-		if (count($rows) !== 2) {
+	private function validatedPublication(array $rows) {
+		if (count($rows) !== 1) {
 			return false;
 		}
 
-		$pair = array();
-		$batch_key = '';
-		$published_at = '';
-		$product_count = null;
-		foreach ($rows as $row) {
-			$location_code = isset($row['location_code']) ? $row['location_code'] : '';
-			$row_batch_key = isset($row['batch_key']) ? strtolower(trim((string)$row['batch_key'])) : '';
-			if (!in_array($location_code, array('PJ1', 'PJ3'), true)
-				|| isset($pair[$location_code])
-				|| !preg_match('/^[a-f0-9]{32}$/', $row_batch_key)
-				|| empty($row['published_at'])
-				|| (int)$row['product_count'] < 1
-				|| ($batch_key !== '' && $batch_key !== $row_batch_key)
-				|| ($published_at !== '' && $published_at !== $row['published_at'])
-				|| ($product_count !== null && $product_count !== (int)$row['product_count'])
-				|| !$this->publicationFileIsValid($row)) {
-				return false;
-			}
-
-			$batch_key = $row_batch_key;
-			$published_at = $row['published_at'];
-			$product_count = (int)$row['product_count'];
-			$pair[$location_code] = $row;
+		$row = reset($rows);
+		$batch_key = isset($row['batch_key']) ? strtolower(trim((string)$row['batch_key'])) : '';
+		if (!is_array($row)
+			|| !isset($row['location_code'])
+			|| $row['location_code'] !== self::PUBLICATION_LOCATION_CODE
+			|| !preg_match('/^[a-f0-9]{32}$/', $batch_key)
+			|| empty($row['published_at'])
+			|| (int)$row['product_count'] < 1
+			|| !$this->publicationFileIsValid($row)) {
+			return false;
 		}
 
-		return isset($pair['PJ1'], $pair['PJ3']) ? $pair : false;
+		return $row;
 	}
 
 	public function publicationPath($publication) {
@@ -671,14 +631,9 @@ class ModelExtensionModuleAnchorPrice extends Model {
 	}
 
 	private function publicationLocation($location_code) {
-		if ($location_code === 'PJ1') {
-			$type = 'prodavaonica';
-			$address = (string)$this->config->get('config_address');
-		} else {
-			$type = 'webshop';
-			$base_url = defined('HTTPS_SERVER') ? HTTPS_SERVER : (defined('HTTP_SERVER') ? HTTP_SERVER : '');
-			$address = parse_url($base_url, PHP_URL_HOST);
-		}
+		$type = 'cjenik';
+		$base_url = defined('HTTPS_SERVER') ? HTTPS_SERVER : (defined('HTTP_SERVER') ? HTTP_SERVER : '');
+		$address = parse_url($base_url, PHP_URL_HOST);
 
 		$type = $this->slugify($type);
 		$address = $this->slugify($address);
@@ -687,6 +642,11 @@ class ModelExtensionModuleAnchorPrice extends Model {
 			'type' => $type !== '' ? substr($type, 0, 40) : 'prodajni-objekt',
 			'address' => $address !== '' ? substr($address, 0, 120) : 'nepoznata-adresa'
 		);
+	}
+
+	private function publicationLabel() {
+		$name = trim((string)$this->config->get('config_name'));
+		return $name !== '' ? $name : 'Watchline';
 	}
 
 	private function decimal($value) {

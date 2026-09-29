@@ -10,14 +10,12 @@
 -- Zbog toga su price i gross_price namjerno jednaki, a tax_context je prazan
 -- JSON popis. Ukljuceni su svi proizvodi koji su postojali na referentni dan te
 -- aktivni/dostupni proizvodi nastali nakon njega. Za postojece post-cutover
--- artikle date_added je samo kandidat datuma prve objave, pa zapis ostaje
--- pending dok administrator ne potvrdi ili ispravi datum. Post-cutover draftovi
+-- artikle date_added je datum prve objave i aktivni zapis odmah je potvrden.
+-- Post-cutover draftovi
 -- i buduci artikli namjerno se ne seedaju: njihov se stvarni datum prve objave
 -- hvata tek pri aktivaciji kroz admin event.
 --
--- PJ1 (fizicka trgovina) i PJ3 (web) koriste isti skup artikala i cijena.
--- Ne stvaraju se dvije sidrene stavke: obje dnevne publikacije citaju ovu istu
--- product/store evidenciju, a razlikuju se samo po location_code u publikaciji.
+-- Watchline koristi jednu prodajnu jedinicu i jednu dnevnu publikaciju.
 
 START TRANSACTION;
 
@@ -74,7 +72,6 @@ SELECT
   'migration_backfill_2026_09_10' AS `source`,
   CASE
 	WHEN p.`status` <> 1 OR p.`date_available` > CURDATE() THEN 'pending'
-    WHEN DATE(p.`date_added`) > '2026-09-10' THEN 'pending'
     ELSE 'confirmed'
   END AS `verification_status`,
   0 AS `created_by`,
@@ -126,11 +123,8 @@ LEFT JOIN `oc_anchor_price_audit` audit
 WHERE ap.`source` = 'migration_backfill_2026_09_10'
   AND audit.`audit_id` IS NULL;
 
--- Upgrade zaštita: ranija razvojna verzija mogla je automatski potvrditi
--- post-cutover datum bez dokaza stvarne prve objave ili potvrditi povijesni
--- proizvod koji trenutačno nije javno aktivan. Automatske, još neuređene zapise
--- vrati na pending. Ručno pregledani zapisi imaju source=admin i ostaju
--- netaknuti. Audit se upisuje prije promjene statusa u istoj transakciji.
+-- Neaktivni i buduci proizvodi ostaju pending. Aktivni first-listing zapisi
+-- koriste spremljeni datum prve objave i ne zahtijevaju rucnu potvrdu.
 INSERT INTO `oc_anchor_price_audit` (
   `anchor_price_id`,
   `product_id`,
@@ -170,14 +164,13 @@ SELECT
     'source', ap.`source`,
     'verification_status', 'pending'
   ),
-  'Automatic first-listing date requires manual verification',
+  'Inactive or future product requires review',
   NOW()
 FROM `oc_anchor_price` ap
 LEFT JOIN `oc_product` p
   ON p.`product_id` = ap.`product_id`
 WHERE (
-    ap.`rule_code` = 'first_listing'
-    OR p.`product_id` IS NULL
+    p.`product_id` IS NULL
     OR p.`status` <> 1
     OR p.`date_available` > CURDATE()
   )
@@ -198,8 +191,7 @@ LEFT JOIN `oc_product` p
 SET ap.`verification_status` = 'pending',
     ap.`date_modified` = NOW()
 WHERE (
-    ap.`rule_code` = 'first_listing'
-    OR p.`product_id` IS NULL
+    p.`product_id` IS NULL
     OR p.`status` <> 1
     OR p.`date_available` > CURDATE()
   )

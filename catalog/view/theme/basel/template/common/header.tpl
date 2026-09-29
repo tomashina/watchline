@@ -35,7 +35,7 @@
 
 <!-- End TrustBox script -->
 <!-- Main stylesheet -->
-<link href="catalog/view/theme/basel/stylesheet/stylesheet.css?v=1.96" rel="stylesheet">
+<link href="catalog/view/theme/basel/stylesheet/stylesheet.css?v=1.97" rel="stylesheet">
 <!-- Mandatory Theme Settings CSS -->
 <style id="basel-mandatory-css"><?php echo $basel_mandatory_css; ?></style>
 <!-- Plugin Stylesheet(s) -->

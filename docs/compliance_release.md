@@ -20,6 +20,7 @@ kopiju baze i datoteka, uključujući `system/storage/modification/`,
    mysql < sql/2026_09_28_anchor_price_01_schema.sql
    mysql < sql/2026_09_28_anchor_price_02_activation.sql
    mysql < sql/2026_09_28_anchor_price_03_backfill.sql
+   mysql < sql/2026_09_29_anchor_price_single_location.sql
    mysql < sql/2026_09_28_anchor_price_04_verify_read_only.sql
    ```
 
@@ -35,21 +36,17 @@ kopiju baze i datoteka, uključujući `system/storage/modification/`,
    početnoj potvrdi narudžbe. Usporediti kontrolne zbrojeve službenih asseta s
    `docs/eu-legal-guarantee-notice.md`.
 7. U administraciji otvoriti **Catalog > Sidrene cijene**. Potvrditi da svaki
-   aktivni proizvod ima potvrđenu sidrenu cijenu, naziv, model i proizvođača.
-   Prazan EAN/JAN/ISBN je dopušten; upisana vrijednost mora biti valjani GTIN.
-8. Tek nakon čiste provjere ručno stvoriti prvi PJ1/PJ3 par i provjeriti javnu
+   aktivni proizvod ima sidrenu cijenu. Aktivni novi artikli potvrđuju se
+   automatski s datumom prve objave; neispravan ili prazan barkod ne blokira CSV.
+8. Ručno stvoriti prvi jedinstveni Watchline cjenik i provjeriti javnu
    stranicu `index.php?route=information/price_list`, broj redaka i SHA-256.
 
 ## Pravilo početnog punjenja
 
 Za artikle koji su postojali do 10. 9. 2026. backfill sprema tadašnju cijenu s
 referentnim datumom 10. 9. 2026. Aktivni artikli dobivaju status `confirmed`, a
-neaktivni `pending`. Artikle prvi put objavljene poslije tog datuma administrator
-mora pregledati i potvrditi prije publikacije.
-
-Trenutačna kopija podataka ima jednu poznatu blokadu publikacije: aktivni
-proizvod ID `5316` nema proizvođača. Taj podatak treba ispraviti i ponovno
-pokrenuti read-only provjeru prije prve PJ1/PJ3 objave.
+neaktivni `pending`. Artikli prvi put objavljeni poslije tog datuma automatski
+koriste stvarni datum prve objave.
 
 ## Zakazani posao
 
@@ -65,7 +62,7 @@ curl --fail --silent --show-error \
 Ključ spremiti u privatnu Curl konfiguraciju izvan web-korijena s ovlastima
 `600`; ne zapisivati ga u Git ni log. Ako scheduler ne podržava zagrebačku
 vremensku zonu, raspored mora eksplicitno pratiti promjene ljetnog/zimskog sata.
-Ponovni poziv istog dana koristi postojeći valjani par, a arhiva se čuva 30 dana.
+Ponovni poziv istog dana koristi postojeći valjani cjenik, a arhiva se čuva 30 dana.
 
 ## Završna kontrola
 
@@ -73,7 +70,7 @@ Ponovni poziv istog dana koristi postojeći valjani par, a arhiva se čuva 30 da
   live-search, wishlist, usporedbu, mini-košaricu, košaricu i oba checkouta.
 - Provjeriti da prikaz sidrene cijene ne mijenja iznos narudžbe.
 - Provjeriti admin uređivanje uz obvezan razlog i revizijski trag.
-- Potvrditi točno jedan dnevni PJ1/PJ3 par s jednakim snimkom proizvoda.
+- Potvrditi točno jedan dnevni Watchline cjenik.
 - Ponovno pokrenuti read-only SQL provjeru i sačuvati rezultat uz zapis deploya.
 
 Ako bilo koja blokirajuća provjera ne uspije, ne uključivati cron i ne objaviti

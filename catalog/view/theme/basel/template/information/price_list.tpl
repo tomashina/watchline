@@ -32,7 +32,7 @@
           <tbody>
             <?php foreach ($publications as $publication) { ?>
             <tr>
-              <td><strong><?php echo htmlspecialchars($publication['location_code'], ENT_QUOTES, 'UTF-8'); ?></strong> — <?php echo htmlspecialchars($publication['location_name'], ENT_QUOTES, 'UTF-8'); ?></td>
+              <td><strong><?php echo htmlspecialchars($publication['location_name'], ENT_QUOTES, 'UTF-8'); ?></strong></td>
               <td><?php echo htmlspecialchars($publication['published'], ENT_QUOTES, 'UTF-8'); ?></td>
               <td><?php echo (int)$publication['product_count']; ?></td>
               <td><a class="btn btn-primary btn-sm" href="<?php echo $publication['download']; ?>" rel="nofollow"><i class="fa fa-download"></i> <?php echo $button_download; ?></a><br><small><?php echo htmlspecialchars($publication['filename'], ENT_QUOTES, 'UTF-8'); ?></small></td>

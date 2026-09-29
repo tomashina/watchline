@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `oc_anchor_price_publication` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Idempotentni upgrade za razvojne/ranije instalacije koje su tablicu već
--- stvorile prije uvođenja atomske PJ1/PJ3 batch objave.
+-- stvorile prije uvođenja atomske batch objave.
 SET @anchor_batch_column_exists := (
   SELECT COUNT(*)
   FROM `information_schema`.`columns`

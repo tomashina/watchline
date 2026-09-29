@@ -639,7 +639,7 @@ WHERE checked.`barcode` NOT REGEXP '^[0-9]{8}$|^[0-9]{12,14}$'
         <> CAST(RIGHT(checked.`barcode`, 1) AS UNSIGNED)
 ORDER BY data.`product_id`, checked.`barcode_field`;
 
--- H. Publikacije PJ1/PJ3. Prije prvog crona prvi upit legitimno vraca 0 redaka.
+-- H. Jedinstvena Watchline publikacija. Prije prvog crona prvi upit legitimno vraca 0 redaka.
 SELECT
   `location_code`,
   `status`,
@@ -652,7 +652,7 @@ ORDER BY `location_code`, `status`;
 SELECT
   COUNT(*) AS `invalid_location_rows`
 FROM `oc_anchor_price_publication`
-WHERE `location_code` NOT IN ('PJ1', 'PJ3');
+WHERE `location_code` <> 'WATCHLINE';
 
 SELECT
   COUNT(*) AS `published_rows_without_batch_key`
@@ -660,27 +660,20 @@ FROM `oc_anchor_price_publication`
 WHERE `status` = 'published'
   AND (`batch_key` = '' OR `batch_key` NOT REGEXP '^[0-9a-f]{32}$');
 
--- Svaki batch ključ smije pripadati samo jednom atomskom PJ1/PJ3 paru s istim
--- punim vremenom objave i jednakim brojem artikala. Retke s result=CHECK istražiti.
+-- Svaki batch kljuc smije pripadati samo jednoj Watchline publikaciji.
 SELECT
   p.`store_id`,
   p.`batch_key`,
   MIN(p.`published_at`) AS `published_at`,
   COUNT(DISTINCT p.`published_at`) AS `distinct_publication_times`,
-  COUNT(DISTINCT DATE(p.`published_at`)) AS `distinct_publication_dates`,
-  SUM(p.`location_code` = 'PJ1') AS `pj1_published_rows`,
-  SUM(p.`location_code` = 'PJ3') AS `pj3_published_rows`,
-  MAX(CASE WHEN p.`location_code` = 'PJ1' THEN p.`product_count` END) AS `pj1_product_count`,
-  MAX(CASE WHEN p.`location_code` = 'PJ3' THEN p.`product_count` END) AS `pj3_product_count`,
+  SUM(p.`location_code` = 'WATCHLINE') AS `watchline_published_rows`,
+  MAX(p.`product_count`) AS `product_count`,
   CASE
     WHEN p.`batch_key` <> ''
-     AND COUNT(*) = 2
-     AND SUM(p.`location_code` = 'PJ1') = 1
-     AND SUM(p.`location_code` = 'PJ3') = 1
-     AND COUNT(DISTINCT p.`published_at`) = 1
-     AND COUNT(DISTINCT DATE(p.`published_at`)) = 1
-     AND MAX(CASE WHEN p.`location_code` = 'PJ1' THEN p.`product_count` END)
-       = MAX(CASE WHEN p.`location_code` = 'PJ3' THEN p.`product_count` END)
+     AND COUNT(*) = 1
+     AND SUM(p.`location_code` = 'WATCHLINE') = 1
+	 AND COUNT(DISTINCT p.`published_at`) = 1
+	 AND MAX(p.`product_count`) > 0
     THEN 'OK'
     ELSE 'CHECK'
   END AS `result`

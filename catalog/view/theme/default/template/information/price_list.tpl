@@ -19,7 +19,7 @@
       <?php if ($publications) { ?>
       <div class="table-responsive"><table class="table table-bordered table-hover"><thead><tr><th><?php echo $column_location; ?></th><th><?php echo $column_published; ?></th><th><?php echo $column_products; ?></th><th><?php echo $column_file; ?></th></tr></thead><tbody>
       <?php foreach ($publications as $publication) { ?>
-      <tr><td><strong><?php echo htmlspecialchars($publication['location_code'], ENT_QUOTES, 'UTF-8'); ?></strong> — <?php echo htmlspecialchars($publication['location_name'], ENT_QUOTES, 'UTF-8'); ?></td><td><?php echo htmlspecialchars($publication['published'], ENT_QUOTES, 'UTF-8'); ?></td><td><?php echo (int)$publication['product_count']; ?></td><td><a class="btn btn-primary btn-sm" href="<?php echo $publication['download']; ?>" rel="nofollow"><?php echo $button_download; ?></a><br><small><?php echo htmlspecialchars($publication['filename'], ENT_QUOTES, 'UTF-8'); ?></small></td></tr>
+      <tr><td><strong><?php echo htmlspecialchars($publication['location_name'], ENT_QUOTES, 'UTF-8'); ?></strong></td><td><?php echo htmlspecialchars($publication['published'], ENT_QUOTES, 'UTF-8'); ?></td><td><?php echo (int)$publication['product_count']; ?></td><td><a class="btn btn-primary btn-sm" href="<?php echo $publication['download']; ?>" rel="nofollow"><?php echo $button_download; ?></a><br><small><?php echo htmlspecialchars($publication['filename'], ENT_QUOTES, 'UTF-8'); ?></small></td></tr>
       <?php } ?>
       </tbody></table></div>
       <?php } else { ?><p><?php echo $text_empty; ?></p><?php } ?>

@@ -3668,6 +3668,9 @@ h4.follow-title {margin-bottom:5px;}
 .legal-guarantee-bar + #footer {
 	margin-top:0;
 }
+.common-home .legal-guarantee-bar {
+	margin-top:0;
+}
 .legal-guarantee-modal .modal-dialog {
 	width:calc(100% - 30px);
 	max-width:900px;

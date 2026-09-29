@@ -82,6 +82,7 @@ class ControllerExtensionModuleAnchorPrice extends Controller {
 			'extension/module/latest',
 			'extension/module/special',
 			'extension/module/bestseller',
+			'extension/module/recently_viewed',
 			'extension/module/basel_products',
 			'extension/module/basel_megamenu',
 			'account/wishlist',

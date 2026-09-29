@@ -33,7 +33,7 @@ class ControllerInformationPriceList extends Controller {
 
 			$data['publications'][] = array(
 				'location_code' => $location_code,
-				'location_name' => $location_code === 'PJ1' ? $this->language->get('text_location_pj1') : $this->language->get('text_location_pj3'),
+				'location_name' => $this->language->get('text_location_watchline'),
 				'published'     => date($this->language->get('datetime_format'), strtotime($publication['published_at'])),
 				'product_count' => (int)$publication['product_count'],
 				'filename'      => $publication['filename'],

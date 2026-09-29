@@ -107,7 +107,7 @@ class ControllerExtensionModuleAnchorPrice extends Controller {
 		if ($this->model_extension_module_anchor_price->tablesExist()) {
 			$publication_state = $this->model_extension_module_anchor_price->getDailyPublicationState();
 			if ($publication_state['due'] && $publication_state['missing']) {
-				$data['publication_warning'] = sprintf($this->language->get('warning_publication_due'), implode(', ', $publication_state['missing']));
+				$data['publication_warning'] = $this->language->get('warning_publication_due');
 			}
 		}
 
