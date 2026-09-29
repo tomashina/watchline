@@ -2211,6 +2211,9 @@ body:not(.narrow_container) .shortcut-wrapper.cart .counter {
 #content.no-min-height, .common-home #content {
 	min-height: 0px;
 }
+.common-home #content {
+	margin-bottom:0;
+}
 
 /* Breadcrumb */
 .common-home .breadcrumb-holder {
